@@ -16,7 +16,7 @@ signup_model = rest_api.model(
 @rest_api.route('/api/user/register')
 class Register(Resource):
     """
-       Регистрация нового пользователя в базе данных с использованием подели `signup_model`.
+       Register new user
     """
 
     @rest_api.expect(signup_model, validate=True)
@@ -40,5 +40,5 @@ class Register(Resource):
         return {
                    "success": True,
                    "userID": new_user.id,
-                   "msg": "Пользователь успешно зарегистрирован"
+                   "msg": "The user was successfully registered"
                }, 200
