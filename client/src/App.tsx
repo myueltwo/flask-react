@@ -1,15 +1,20 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {Alert} from "react-bootstrap";
+import './App.scss';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        Hello world
-      </header>
-    </div>
-  );
+    const variant = 'success'
+    return (
+        <div className="App">
+            <Alert key={variant} variant={variant}>
+                    This is a {variant} alert—check it out!
+                </Alert>
+            <header className="App-header">
+                dfsdf
+
+            </header>
+        </div>
+    );
 }
 
 export default App;
