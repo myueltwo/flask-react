@@ -10,8 +10,7 @@ function App() {
                     This is a {variant} alert—check it out!
                 </Alert>
             <header className="App-header">
-                dfsdf
-
+                Hello world
             </header>
         </div>
     );
