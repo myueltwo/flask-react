@@ -1,18 +1,22 @@
 import React from 'react';
-import {Alert} from "react-bootstrap";
 import './App.scss';
+import {BrowserRouter as Router, Routes, Route}
+    from 'react-router-dom';
+import NavbarHeader from "./components/Navbar/Navbar";
+import About from "./pages/about";
+import Account from "./pages/account";
+import Home from "./pages";
 
 function App() {
-    const variant = 'success'
     return (
-        <div className="App">
-            <Alert key={variant} variant={variant}>
-                    This is a {variant} alert—check it out!
-                </Alert>
-            <header className="App-header">
-                Hello world
-            </header>
-        </div>
+        <Router>
+            <NavbarHeader/>
+            <Routes>
+                <Route index={false} path='/' element={<Home/>}/>
+                <Route path='/about' element={<About/>}/>
+                <Route path='/account' element={<Account/>}/>
+            </Routes>
+        </Router>
     );
 }
 
