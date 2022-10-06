@@ -1,5 +1,6 @@
 import React from "react";
 import {Navbar, Container, Nav} from "react-bootstrap";
+import {PersonFill} from "react-bootstrap-icons";
 
 function NavbarHeader() {
     return (
@@ -13,7 +14,7 @@ function NavbarHeader() {
                     </Nav>
                     <Nav>
                         <Nav.Link href="/account">
-                            <i className="bi bi-person-fill d-inline-block"></i>
+                            <PersonFill className="d-inline-block"/>
                             current user
                         </Nav.Link>
                         <Nav.Link href="#logout">Logout</Nav.Link>
