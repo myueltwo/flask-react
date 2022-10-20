@@ -1,4 +1,4 @@
-from .config import db, login_manager, bcrypt
+from .config import db, bcrypt
 from jwt import encode as encode_jwt, decode as decode_jwt, ExpiredSignatureError, InvalidTokenError
 from flask_login import UserMixin
 from datetime import datetime, timedelta
@@ -10,7 +10,6 @@ def create_id():
     return uuid.uuid4().hex
 
 
-@login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
 
