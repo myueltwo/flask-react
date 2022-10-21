@@ -1,10 +1,10 @@
 from flask import Flask
-from .config import db, bcrypt, create_api
+from api_server_flask.api.config import db, bcrypt, create_api
 
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object('api.config.BaseConfig')
+    app.config.from_object('api_server_flask.api.config.BaseConfig')
     db.init_app(app)
     bcrypt.init_app(app)
 

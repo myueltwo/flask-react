@@ -1,4 +1,4 @@
-from .config import db, bcrypt
+from api_server_flask.api.config import db, bcrypt
 from jwt import encode as encode_jwt, decode as decode_jwt, ExpiredSignatureError, InvalidTokenError
 from flask_login import UserMixin
 from datetime import datetime, timedelta
@@ -17,10 +17,10 @@ def load_user(user_id):
 class User(db.Model, UserMixin):
     id = db.Column(db.String(32), primary_key=True)
     username = db.Column(db.String(120), nullable=False)
-    # surname = db.Column(db.String(120), nullable=False)
-    # patronymic = db.Column(db.String(120), nullable=False)
-    # login = db.Column(db.String(20), unique=True, nullable=False)
-    email = db.Column(db.String(60), unique=True, nullable=False)
+    surname = db.Column(db.String(120), nullable=False)
+    patronymic = db.Column(db.String(120), nullable=False)
+    login = db.Column(db.String(20), unique=True, nullable=False)
+    # email = db.Column(db.String(60), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
 
     # role_id = db.Column(db.String(32), db.ForeignKey('role.id'), nullable=False)

@@ -1,10 +1,10 @@
 # Server side setup
 ## Freeze flask dependencies
-    cd api-server-flask
+    cd api_server_flask
     pip freeze > requirements.txt
 ## Create environment
 ```
-    cd api-server-flask
+    cd api_server_flask
     py -3 -m venv venv
 ```
 ## Activate the environment
