@@ -16,7 +16,7 @@ def load_user(user_id):
 
 class User(db.Model, UserMixin):
     id = db.Column(db.String(32), primary_key=True)
-    username = db.Column(db.String(120), nullable=False)
+    name = db.Column(db.String(120), nullable=False)
     surname = db.Column(db.String(120), nullable=False)
     patronymic = db.Column(db.String(120), nullable=False)
     login = db.Column(db.String(20), unique=True, nullable=False)
@@ -27,15 +27,21 @@ class User(db.Model, UserMixin):
     # role = db.relationship('Role', backref=db.backref('users', lazy=True))
     # group_id = db.Column(db.String(32), db.ForeignKey('group.id'), nullable=True)
 
-    def get_reset_token(self, expires_sec=1800):
+    def encode_access_token(self):
         """
            Generates the Auth Token
            :return: string
            """
         try:
+            now = datetime.utcnow()
+            token_age_h = current_app.config.get("TOKEN_EXPIRE_HOURS")
+            token_age_m = current_app.config.get("TOKEN_EXPIRE_MINUTES")
+            expire = now + timedelta(hours=token_age_h, minutes=token_age_m)
+            if current_app.config["TESTING"]:
+                expire = now + timedelta(seconds=5)
             payload = {
-                'exp': datetime.utcnow() + timedelta(seconds=expires_sec),
-                'iat': datetime.utcnow(),
+                'exp': expire,
+                'iat': now,
                 'sub': self.id
             }
             return encode_jwt(
@@ -48,6 +54,9 @@ class User(db.Model, UserMixin):
 
     def set_password(self, password):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def check_password(self, password):
+        return bcrypt.check_password_hash(self.password, password)
 
     def save(self):
         self.id = create_id()
@@ -67,8 +76,8 @@ class User(db.Model, UserMixin):
             return e
 
     @classmethod
-    def get_by_email(cls, email):
-        return cls.query.filter_by(email=email).first()
+    def get_by_login(cls, login):
+        return cls.query.filter_by(login=login).first()
 
     def __repr__(self):
         return "User('{self.name}', 'self.login')"
