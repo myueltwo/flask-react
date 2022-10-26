@@ -1,4 +1,5 @@
 from marshmallow import Schema, fields, ValidationError, pre_load
+from flask_restx import Model, fields as fields_fl
 
 
 class UserSchema(Schema):
@@ -11,3 +12,11 @@ class UserSchema(Schema):
 
     def format_name(self, user):
         return f"{user.username}, {user.surname}"
+
+
+login_model = Model(
+    'LoginModel', {
+        "login": fields_fl.String(required=True, min_length=4, max_length=64),
+        "password": fields_fl.String(required=True, min_length=4, max_length=16)
+    }
+)

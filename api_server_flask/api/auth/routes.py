@@ -1,20 +1,15 @@
-from flask_restx import Namespace, Resource, fields
-from api_server_flask.api.auth.dto import UserSchema
+from flask_restx import Namespace, Resource
+from api_server_flask.api.auth.dto import UserSchema, login_model
 from http import HTTPStatus
 from flask import request
-from marshmallow import ValidationError, utils as ma_utils
+from marshmallow import ValidationError
 
 auth_ns = Namespace('auth', description='Authentication of users')
+auth_ns.models[login_model.name] = login_model
 
 
 @auth_ns.route('/login', methods=["POST"])
 class LoginUser(Resource):
-    login_model = auth_ns.model(
-        'LoginModel', {
-            "login": fields.String(required=True, min_length=4, max_length=64),
-            "password": fields.String(required=True, min_length=4, max_length=16)
-        }
-    )
 
     @auth_ns.expect(login_model)
     @auth_ns.response(int(HTTPStatus.OK), "Login succeeded.")
