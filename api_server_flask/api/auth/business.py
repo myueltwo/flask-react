@@ -1,7 +1,9 @@
 from http import HTTPStatus
-from api_server_flask.api.models import User
+from api_server_flask.api.models.user import User
+from api_server_flask.api.models.black_listed_token import BlacklistedToken
 from flask_restx import abort
 from flask import current_app, jsonify
+from api_server_flask.api.auth.decorators import token_required
 
 
 def process_login_request(login, password):
@@ -9,9 +11,6 @@ def process_login_request(login, password):
     if not user or not user.check_password(password):
         abort(HTTPStatus.UNAUTHORIZED, 'login or password does not match', status="fail")
     access_token = user.encode_access_token()
-    # return {
-    #
-    # }, HTTPStatus.OK
     return _create_auth_successful_response(
         access_token,
         HTTPStatus.OK,
@@ -38,3 +37,16 @@ def _get_token_expire_time():
     token_age_m = current_app.config.get("TOKEN_EXPIRE_MINUTES")
     expires_in_seconds = token_age_h * 3600 + token_age_m * 60
     return expires_in_seconds if not current_app.config["TESTING"] else 5
+
+
+@token_required
+def process_logout_request():
+    access_token = process_logout_request.token
+    expires_at = process_logout_request.expires_at
+    blacklisted_token = BlacklistedToken(access_token, expires_at)
+    from api_server_flask.api import db
+
+    db.session.add(blacklisted_token)
+    db.session.commit()
+    response_dict = dict(status="success", message="successfully logged out")
+    return response_dict, HTTPStatus.OK

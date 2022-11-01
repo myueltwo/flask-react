@@ -2,12 +2,9 @@ from api_server_flask.api.config import db, bcrypt
 from jwt import encode as encode_jwt, decode as decode_jwt, ExpiredSignatureError, InvalidTokenError
 from flask_login import UserMixin
 from datetime import datetime, timedelta
-from flask import flash, current_app
-import uuid
-
-
-def create_id():
-    return uuid.uuid4().hex
+from flask import current_app
+from api_server_flask.util.result import Result
+from api_server_flask.api.models.util import create_id
 
 
 def load_user(user_id):
@@ -15,7 +12,7 @@ def load_user(user_id):
 
 
 class User(db.Model, UserMixin):
-    id = db.Column(db.String(32), primary_key=True)
+    id = db.Column(db.String(32), primary_key=True, default=create_id())
     name = db.Column(db.String(120), nullable=False)
     surname = db.Column(db.String(120), nullable=False)
     patronymic = db.Column(db.String(120), nullable=False)
@@ -52,32 +49,49 @@ class User(db.Model, UserMixin):
         except Exception as e:
             return e
 
-    def set_password(self, password):
+    @property
+    def password(self):
+        raise AttributeError("password: write-only field")
+
+    @password.setter
+    def password(self, password):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
 
     def save(self):
-        self.id = create_id()
         db.session.add(self)
         db.session.commit()
 
     @staticmethod
     def verify_reset_token(token):
+        if isinstance(token, bytes):
+            token = token.decode("ascii")
+        if token.startswith("Bearer "):
+            split = token.split("Bearer")
+            token = split[1].strip()
         try:
-            user_id = decode_jwt(token, current_app.config.get('SECRET_KEY'), algorithms=["HS256"])['sub']
-            return User.query.get(user_id)
+            payload = decode_jwt(token, current_app.config.get('SECRET_KEY'), algorithms=["HS256"])
+            from api_server_flask.api.models.black_listed_token import BlacklistedToken
+            if BlacklistedToken.check_blacklist(token):
+                error = "Token blacklisted. Please log in again."
+                return Result.Fail(error)
+            return Result.Ok(dict(
+                user_id=payload['sub'],
+                token=token,
+                expires_at=payload["exp"]
+            ))
         except ExpiredSignatureError:
-            flash('Signature expired. Please log in again.')
-            return None
+            error = 'Signature expired. Please log in again.'
+            return Result.Fail(error)
         except InvalidTokenError as e:
-            flash('Invalid token. Please log in again')
-            return e
+            error = 'Invalid token. Please log in again'
+            return Result.Fail(error)
 
     @classmethod
     def get_by_login(cls, login):
         return cls.query.filter_by(login=login).first()
 
     def __repr__(self):
-        return "User('{self.name}', 'self.login')"
+        return f"<User name={self.name}, login={self.login})>"
