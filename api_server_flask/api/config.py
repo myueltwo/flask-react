@@ -7,7 +7,8 @@ from pathlib import Path
 
 
 HERE = Path(__file__).parent
-SQLITE_DB = "sqlite:///" + str(HERE / "site.db")
+SQLITE_DEV = "sqlite:///" + str(HERE / "site_dev.db")
+SQLITE_TEST = "sqlite:///" + str(HERE / "site_test.db")
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -40,7 +41,7 @@ class BaseConfig:
     """Base configuration."""
 
     SECRET_KEY = os.getenv("SECRET_KEY", "open sesame")
-    SQLALCHEMY_DATABASE_URI = SQLITE_DB
+    SQLALCHEMY_DATABASE_URI = SQLITE_DEV
     TOKEN_EXPIRE_HOURS = 0
     TOKEN_EXPIRE_MINUTES = 0
 
@@ -49,6 +50,7 @@ class TestingConfig(BaseConfig):
     """Testing configuration."""
 
     TESTING = True
+    SQLALCHEMY_DATABASE_URI = SQLITE_TEST
 
 
 class DevelopmentConfig(BaseConfig):

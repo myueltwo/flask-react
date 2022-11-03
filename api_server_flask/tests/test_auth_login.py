@@ -1,4 +1,4 @@
-"""Unit tests for api.auth_login API endpoint."""
+"""Unit tests for api.auth_login_user API endpoint."""
 from http import HTTPStatus
 
 from api_server_flask.api.models.user import User
