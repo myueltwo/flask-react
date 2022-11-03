@@ -2,7 +2,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_restx import Api
 from flask import Blueprint
+import os
+from pathlib import Path
 
+
+HERE = Path(__file__).parent
+SQLITE_DB = "sqlite:///" + str(HERE / "site.db")
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -31,9 +36,11 @@ def create_api_bp():
     return api_bp
 
 
-class BaseConfig():
-    SECRET_KEY = '5791628bb0b13ce0c676dfde280ba245'
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
+class BaseConfig:
+    """Base configuration."""
+
+    SECRET_KEY = os.getenv("SECRET_KEY", "open sesame")
+    SQLALCHEMY_DATABASE_URI = SQLITE_DB
     TOKEN_EXPIRE_HOURS = 0
     TOKEN_EXPIRE_MINUTES = 0
 
