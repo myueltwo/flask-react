@@ -13,7 +13,7 @@ WWW_AUTH_BLACKLISTED_TOKEN = (
 )
 
 
-def test_logout(client, db):
+def test_logout(client, db, user):
     response = login_user(client)
     assert "access_token" in response.json
     access_token = response.json["access_token"]
@@ -28,7 +28,7 @@ def test_logout(client, db):
     assert access_token == blacklist[0].token
 
 
-def test_logout_token_blacklisted(client, db):
+def test_logout_token_blacklisted(client, db, user):
     response = login_user(client)
     assert "access_token" in response.json
     access_token = response.json["access_token"]

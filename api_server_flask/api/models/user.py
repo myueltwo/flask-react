@@ -5,7 +5,6 @@ from jwt import (
     ExpiredSignatureError,
     InvalidTokenError,
 )
-from flask_login import UserMixin
 from datetime import datetime, timedelta
 from flask import current_app
 from api_server_flask.util.result import Result
@@ -16,14 +15,14 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 
-class User(db.Model, UserMixin):
+class User(db.Model):
     id = db.Column(db.String(32), primary_key=True, default=create_id())
     name = db.Column(db.String(120), nullable=False)
     surname = db.Column(db.String(120), nullable=False)
     patronymic = db.Column(db.String(120), nullable=False)
     login = db.Column(db.String(20), unique=True, nullable=False)
     # email = db.Column(db.String(60), unique=True, nullable=False)
-    password = db.Column(db.String(60), nullable=False)
+    password_hash = db.Column(db.String(60), nullable=False)
 
     # role_id = db.Column(db.String(32), db.ForeignKey('role.id'), nullable=False)
     # role = db.relationship('Role', backref=db.backref('users', lazy=True))
@@ -54,10 +53,10 @@ class User(db.Model, UserMixin):
 
     @password.setter
     def password(self, password):
-        self.password = bcrypt.generate_password_hash(password).decode("utf-8")
+        self.password_hash = bcrypt.generate_password_hash(password).decode("utf-8")
 
     def check_password(self, password):
-        return bcrypt.check_password_hash(self.password, password)
+        return bcrypt.check_password_hash(self.password_hash, password)
 
     def save(self):
         db.session.add(self)
@@ -94,4 +93,4 @@ class User(db.Model, UserMixin):
         return cls.query.filter_by(login=login).first()
 
     def __repr__(self):
-        return f"<User name={self.name}, login={self.login})>"
+        return f"<User name={self.name}, login={self.login}>"

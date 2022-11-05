@@ -1,4 +1,4 @@
-"""Unit tests for api.auth_login_user API endpoint."""
+"""Unit tests for api.auth_login API endpoint."""
 from http import HTTPStatus
 
 from api_server_flask.api.models.user import User
@@ -8,7 +8,7 @@ SUCCESS = "successfully logged in"
 UNAUTHORIZED = "email or password does not match"
 
 
-def test_login(client, db):
+def test_login(client, db, user):
     response = login_user(client)
     assert response.status_code == HTTPStatus.OK
     assert "status" in response.json and response.json["status"] == "success"
@@ -19,11 +19,11 @@ def test_login(client, db):
     assert result.success
     token_payload = result.value
     # assert not token_payload["admin"]
-    user = User.get(token_payload["user_id"])
-    assert user and user.login == LOGIN
+    user_login = User.get(token_payload["user_id"])
+    assert user_login and user_login.login == LOGIN
 
 
-def test_login_does_not_exist(client, db):
+def test_login_does_not_exist(client, db, user):
     response = login_user(client)
     assert response.status_code == HTTPStatus.UNAUTHORIZED
     assert "message" in response.json and response.json["message"] == UNAUTHORIZED

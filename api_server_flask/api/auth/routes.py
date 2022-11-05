@@ -12,7 +12,7 @@ auth_ns = Namespace("auth", description="Authentication of users")
 auth_ns.models[login_model.name] = login_model
 
 
-@auth_ns.route("/login", methods=["POST"])
+@auth_ns.route("/login", endpoint="auth_login")
 class LoginUser(Resource):
     @auth_ns.doc(security=None)
     @auth_ns.expect(login_model)
