@@ -27,8 +27,6 @@ def test_config_production():
     app = create_app("production")
     assert app.config["SECRET_KEY"] != "open sesame"
     assert not app.config["TESTING"]
-    assert app.config["SQLALCHEMY_DATABASE_URI"] == os.getenv(
-        "DATABASE_URL", SQLITE_DEV
-    )
+    assert app.config["SQLALCHEMY_DATABASE_URI"] == os.getenv("DATABASE_URL", SQLITE_DEV)
     assert app.config["TOKEN_EXPIRE_HOURS"] == 1
     assert app.config["TOKEN_EXPIRE_MINUTES"] == 0

@@ -9,12 +9,10 @@ from api_server_flask.api.auth.decorators import token_required
 def process_login_request(login, password):
     user = User.get_by_login(login)
     if not user or not user.check_password(password):
-        abort(HTTPStatus.UNAUTHORIZED, 'login or password does not match', status="fail")
+        abort(HTTPStatus.UNAUTHORIZED, "login or password does not match", status="fail")
     access_token = user.encode_access_token()
     return _create_auth_successful_response(
-        access_token,
-        HTTPStatus.OK,
-        "successfully logged in"
+        access_token, HTTPStatus.OK, "successfully logged in"
     )
 
 

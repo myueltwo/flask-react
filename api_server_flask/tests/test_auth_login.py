@@ -19,7 +19,7 @@ def test_login(client, db):
     assert result.success
     token_payload = result.value
     # assert not token_payload["admin"]
-    user = User.get(token_payload['user_id'])
+    user = User.get(token_payload["user_id"])
     assert user and user.login == LOGIN
 
 

@@ -29,11 +29,11 @@ def db(app, client, request):
 @pytest.fixture
 def user(db):
     user = User(
-        name='Элина',
-        surname='Яхина',
-        patronymic='Эльмаровна',
+        name="Элина",
+        surname="Яхина",
+        patronymic="Эльмаровна",
         login=LOGIN,
-        password=PASSWORD
+        password=PASSWORD,
     )
     db.session.add(user)
     db.session.commit()

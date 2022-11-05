@@ -3,15 +3,17 @@ from api_server_flask.api.auth.dto import UserSchema, login_model
 from http import HTTPStatus
 from flask import request
 from marshmallow import ValidationError
-from api_server_flask.api.auth.business import process_login_request, process_logout_request
+from api_server_flask.api.auth.business import (
+    process_login_request,
+    process_logout_request,
+)
 
-auth_ns = Namespace('auth', description='Authentication of users')
+auth_ns = Namespace("auth", description="Authentication of users")
 auth_ns.models[login_model.name] = login_model
 
 
-@auth_ns.route('/login', methods=["POST"])
+@auth_ns.route("/login", methods=["POST"])
 class LoginUser(Resource):
-
     @auth_ns.doc(security=None)
     @auth_ns.expect(login_model)
     @auth_ns.response(int(HTTPStatus.OK), "Login succeeded.")
@@ -27,7 +29,7 @@ class LoginUser(Resource):
             data = UserSchema().load(json_data)
         except ValidationError as err:
             return err.messages, HTTPStatus.UNPROCESSABLE_ENTITY
-        login = data.get('login')
+        login = data.get("login")
         password = data.get("password")
         return process_login_request(login, password)
 

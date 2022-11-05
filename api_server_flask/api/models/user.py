@@ -1,5 +1,10 @@
 from api_server_flask.api.config import db, bcrypt
-from jwt import encode as encode_jwt, decode as decode_jwt, ExpiredSignatureError, InvalidTokenError
+from jwt import (
+    encode as encode_jwt,
+    decode as decode_jwt,
+    ExpiredSignatureError,
+    InvalidTokenError,
+)
 from flask_login import UserMixin
 from datetime import datetime, timedelta
 from flask import current_app
@@ -26,9 +31,9 @@ class User(db.Model, UserMixin):
 
     def encode_access_token(self):
         """
-           Generates the Auth Token
-           :return: string
-           """
+        Generates the Auth Token
+        :return: string
+        """
         try:
             now = datetime.utcnow()
             token_age_h = current_app.config.get("TOKEN_EXPIRE_HOURS")
@@ -36,15 +41,9 @@ class User(db.Model, UserMixin):
             expire = now + timedelta(hours=token_age_h, minutes=token_age_m)
             if current_app.config["TESTING"]:
                 expire = now + timedelta(seconds=5)
-            payload = {
-                'exp': expire,
-                'iat': now,
-                'sub': self.id
-            }
+            payload = {"exp": expire, "iat": now, "sub": self.id}
             return encode_jwt(
-                payload,
-                current_app.config.get('SECRET_KEY'),
-                algorithm='HS256'
+                payload, current_app.config.get("SECRET_KEY"), algorithm="HS256"
             )
         except Exception as e:
             return e
@@ -55,7 +54,7 @@ class User(db.Model, UserMixin):
 
     @password.setter
     def password(self, password):
-        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+        self.password = bcrypt.generate_password_hash(password).decode("utf-8")
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
@@ -72,21 +71,22 @@ class User(db.Model, UserMixin):
             split = token.split("Bearer")
             token = split[1].strip()
         try:
-            payload = decode_jwt(token, current_app.config.get('SECRET_KEY'), algorithms=["HS256"])
+            payload = decode_jwt(
+                token, current_app.config.get("SECRET_KEY"), algorithms=["HS256"]
+            )
             from api_server_flask.api.models.black_listed_token import BlacklistedToken
+
             if BlacklistedToken.check_blacklist(token):
                 error = "Token blacklisted. Please log in again."
                 return Result.Fail(error)
-            return Result.Ok(dict(
-                user_id=payload['sub'],
-                token=token,
-                expires_at=payload["exp"]
-            ))
+            return Result.Ok(
+                dict(user_id=payload["sub"], token=token, expires_at=payload["exp"])
+            )
         except ExpiredSignatureError:
-            error = 'Signature expired. Please log in again.'
+            error = "Signature expired. Please log in again."
             return Result.Fail(error)
-        except InvalidTokenError as e:
-            error = 'Invalid token. Please log in again'
+        except InvalidTokenError:
+            error = "Invalid token. Please log in again"
             return Result.Fail(error)
 
     @classmethod

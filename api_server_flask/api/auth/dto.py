@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, ValidationError, pre_load
+from marshmallow import Schema, fields
 from flask_restx import Model, fields as fields_fl
 
 
@@ -15,8 +15,9 @@ class UserSchema(Schema):
 
 
 login_model = Model(
-    'LoginModel', {
+    "LoginModel",
+    {
         "login": fields_fl.String(required=True, min_length=4, max_length=64),
-        "password": fields_fl.String(required=True, min_length=4, max_length=16)
-    }
+        "password": fields_fl.String(required=True, min_length=4, max_length=16),
+    },
 )

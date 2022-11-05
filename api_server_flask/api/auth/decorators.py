@@ -3,7 +3,7 @@ from functools import wraps
 
 from flask import request
 
-from api_server_flask.api.exceptions import ApiUnauthorized, ApiForbidden
+from api_server_flask.api.exceptions import ApiUnauthorized
 from api_server_flask.api.models.user import User
 
 

@@ -17,11 +17,7 @@ bcrypt = Bcrypt()
 def create_api_bp():
     api_bp = Blueprint("api", __name__, url_prefix="/api/v1")
     authorizations = {
-        "Bearer": {
-            "type": "apiKey",
-            "in": "header",
-            "name": "Authorization"
-        }
+        "Bearer": {"type": "apiKey", "in": "header", "name": "Authorization"}
     }
     rest_api = Api(
         api_bp,
@@ -30,10 +26,11 @@ def create_api_bp():
         description="Welcome to the Swagger UI documentation site!",
         doc="/ui",
         authorizations=authorizations,
-        security='Bearer'
+        security="Bearer",
     )
     from .auth.routes import auth_ns
-    rest_api.add_namespace(auth_ns, path='/auth')
+
+    rest_api.add_namespace(auth_ns, path="/auth")
     return api_bp
 
 
