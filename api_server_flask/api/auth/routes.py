@@ -22,7 +22,7 @@ class LoginUser(Resource):
     @auth_ns.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal server error.")
     def post(self):
         """Authenticate an existing user and return an access token."""
-        json_data = request.get_json()
+        json_data = request.get_json() if request.is_json else request.form
         if not json_data:
             return {"message": "Validation error."}, HTTPStatus.BAD_REQUEST
         try:

@@ -92,5 +92,9 @@ class User(db.Model):
     def get_by_login(cls, login):
         return cls.query.filter_by(login=login).first()
 
+    @classmethod
+    def find_by_id(cls, public_id):
+        return cls.query.filter_by(id=public_id).first()
+
     def __repr__(self):
         return f"<User name={self.name}, login={self.login}>"
