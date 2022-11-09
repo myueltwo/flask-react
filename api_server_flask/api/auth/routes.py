@@ -1,19 +1,23 @@
 from flask_restx import Namespace, Resource
-from api_server_flask.api.auth.dto import UserSchema, login_model
+from api_server_flask.api.auth.dto import user_schema, login_model, user_model
 from http import HTTPStatus
 from flask import request
 from marshmallow import ValidationError
 from api_server_flask.api.auth.business import (
     process_login_request,
     process_logout_request,
+    get_logged_in_user,
 )
 
 auth_ns = Namespace("auth", description="Authentication of users")
 auth_ns.models[login_model.name] = login_model
+auth_ns.models[user_model.name] = user_model
 
 
 @auth_ns.route("/login", endpoint="auth_login")
 class LoginUser(Resource):
+    """Handles HTTP requests to URL: /api/v1/auth/login."""
+
     @auth_ns.doc(security=None)
     @auth_ns.expect(login_model)
     @auth_ns.response(int(HTTPStatus.OK), "Login succeeded.")
@@ -26,7 +30,7 @@ class LoginUser(Resource):
         if not json_data:
             return {"message": "Validation error."}, HTTPStatus.BAD_REQUEST
         try:
-            data = UserSchema().load(json_data)
+            data = user_schema.load(json_data)
         except ValidationError as err:
             return err.messages, HTTPStatus.UNPROCESSABLE_ENTITY
         login = data.get("login")
@@ -46,3 +50,18 @@ class LogoutUser(Resource):
     def post(self):
         """Add token to blacklist, deauthenticating the current user."""
         return process_logout_request()
+
+
+@auth_ns.route("/user", endpoint="auth_user")
+class GetUser(Resource):
+    """Handles HTTP requests to URL: /auth/user."""
+
+    @auth_ns.doc(security="Bearer")
+    @auth_ns.response(int(HTTPStatus.OK), "Token is currently valid.", user_model)
+    @auth_ns.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
+    @auth_ns.response(int(HTTPStatus.UNAUTHORIZED), "Token is invalid or expired.")
+    def get(self):
+        """Validate access token and return user info."""
+        user = get_logged_in_user()
+        print(user)
+        return user_schema.dump(user)

@@ -4,6 +4,10 @@ from api_server_flask.api.models.black_listed_token import BlacklistedToken
 from flask_restx import abort
 from flask import current_app, jsonify
 from api_server_flask.api.auth.decorators import token_required
+from api_server_flask.util.datetime_util import (
+    remaining_fromtimestamp,
+    format_timespan_digits,
+)
 
 
 def process_login_request(login, password):
@@ -48,3 +52,12 @@ def process_logout_request():
     db.session.commit()
     response_dict = dict(status="success", message="successfully logged out")
     return response_dict, HTTPStatus.OK
+
+
+@token_required
+def get_logged_in_user():
+    user_id = get_logged_in_user.user_id
+    user = User.find_by_id(user_id)
+    expires_at = get_logged_in_user.expires_at
+    user.token_expires_in = format_timespan_digits(remaining_fromtimestamp(expires_at))
+    return user
