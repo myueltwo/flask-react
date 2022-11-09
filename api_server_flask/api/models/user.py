@@ -82,7 +82,7 @@ class User(db.Model):
                 dict(user_id=payload["sub"], token=token, expires_at=payload["exp"])
             )
         except ExpiredSignatureError:
-            error = "Signature expired. Please log in again."
+            error = "Access token expired. Please log in again."
             return Result.Fail(error)
         except InvalidTokenError:
             error = "Invalid token. Please log in again"

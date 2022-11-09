@@ -23,8 +23,4 @@ login_model = Model(
 
 user_schema = UserSchema()
 user_model_schema = JSONSchema().dump(user_schema)["definitions"]["UserSchema"]
-user_model = SchemaModel(
-    "UserModel",
-    user_model_schema
-)
-
+user_model = SchemaModel("UserModel", user_model_schema)
