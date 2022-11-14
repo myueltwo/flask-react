@@ -1,8 +1,6 @@
 from flask_restx import Namespace, Resource
 from api_server_flask.api.auth.dto import user_schema, login_model, user_model
 from http import HTTPStatus
-from flask import request
-from marshmallow import ValidationError
 from api_server_flask.api.auth.business import (
     process_login_request,
     process_logout_request,
@@ -26,13 +24,8 @@ class LoginUser(Resource):
     @auth_ns.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal server error.")
     def post(self):
         """Authenticate an existing user and return an access token."""
-        json_data = request.get_json() if request.is_json else request.form
-        if not json_data:
-            return {"message": "Validation error."}, HTTPStatus.BAD_REQUEST
-        try:
-            data = user_schema.load(json_data)
-        except ValidationError as err:
-            return err.messages, HTTPStatus.UNPROCESSABLE_ENTITY
+        from api_server_flask.util.schema_load import parser_schema_load
+        data = parser_schema_load(user_schema)
         login = data.get("login")
         password = data.get("password")
         return process_login_request(login, password)

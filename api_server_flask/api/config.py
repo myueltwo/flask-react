@@ -29,8 +29,10 @@ def create_api_bp():
         security="Bearer",
     )
     from .auth.routes import auth_ns
+    from .roles.routes import role_ns
 
     rest_api.add_namespace(auth_ns, path="/auth")
+    rest_api.add_namespace(role_ns, path="/roles")
     return api_bp
 
 
