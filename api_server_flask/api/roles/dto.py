@@ -4,7 +4,7 @@ from api_server_flask.util.covert_model import get_model_from_schema
 
 class RoleSchema(Schema):
     name = fields.Str(required=True)
-    link = fields.URL(schemes=["http", "https"], required=True, dump_only=True)
+    link = fields.URL(schemes=["http", "https"], dump_only=True)
 
 
 class PaginationLoadScheme(Schema):
