@@ -58,7 +58,6 @@ class Role(Resource):
     """Handles HTTP requests to URL: /roles/{role_id}."""
 
     @role_ns.response(int(HTTPStatus.OK), "Retrieved role.", role_model)
-    @role_ns.marshal_with(role_model)
     def get(self, role_id):
         """Retrieve a role."""
         return retrieve_role(role_id)

@@ -4,7 +4,7 @@ from flask_restx import abort
 from api_server_flask.api import db
 from flask import jsonify, url_for
 from api_server_flask.api.auth.decorators import token_required
-from api_server_flask.api.roles.dto import PaginationSchema
+from api_server_flask.api.roles.dto import PaginationSchema, RoleSchema
 
 
 @token_required
@@ -18,7 +18,7 @@ def create_role(role_dict):
     db.session.commit()
     response = jsonify(status="success", message=f"New role added: {name}.")
     response.status_code = HTTPStatus.CREATED
-    response.headers["Location"] = url_for("api.role", id=role.id)
+    response.headers["Location"] = url_for("api.role", role_id=role.id)
     return response
 
 
@@ -38,12 +38,13 @@ def retrieve_role_list(page, per_page):
 
 @token_required
 def retrieve_role(role_id):
-    return Role.query.get_or_404(role_id, description=f"{role_id} not found in database.")
+    role = Role.query.get_or_404(role_id, description=f"{role_id} not found in database.")
+    return RoleSchema().dump(role)
 
 
 # @admin_token_required
 def update_role(role_id, role_dict):
-    role = Role.get(role_id)
+    role = Role.query.get(role_id)
     if role:
         for k, v in role_dict.items():
             setattr(role, k, v)
@@ -56,9 +57,7 @@ def update_role(role_id, role_dict):
 
 # @admin_token_required
 def delete_role(role_id):
-    role = Role.query.get_or_404(
-        description=f"{role_id} not found in database."
-    )
+    role = Role.query.get_or_404(role_id, description=f"{role_id} not found in database.")
     db.session.delete(role)
     db.session.commit()
     return "", HTTPStatus.NO_CONTENT
