@@ -21,6 +21,12 @@
     from api import db
     db.create_all()
 ```
+## Update Database
+```
+    flask db init
+    flask db migrate --message "some message for action"
+    flask db upgrade
+``` 
 ## quick start
 ```
     set FLASK_APP=app.py

@@ -3,16 +3,13 @@ from api_server_flask.api.models.role import Role
 from flask_restx import abort
 from api_server_flask.api import db
 from flask import jsonify, url_for
-from api_server_flask.api.auth.decorators import token_required
+from api_server_flask.api.auth.decorators import token_required, admin_token_required
 from api_server_flask.api.roles.dto import PaginationSchema, RoleSchema
 
 
-@token_required
+@admin_token_required
 def create_role(role_dict):
     name = role_dict.get("name")
-    if Role.find_by_name(name):
-        error = f"Role name: {name} already exists, must be unique."
-        abort(HTTPStatus.CONFLICT, error, status="fail")
     role = Role(**role_dict)
     db.session.add(role)
     db.session.commit()
@@ -42,7 +39,7 @@ def retrieve_role(role_id):
     return RoleSchema().dump(role)
 
 
-# @admin_token_required
+@admin_token_required
 def update_role(role_id, role_dict):
     role = Role.query.get(role_id)
     if role:
@@ -55,7 +52,7 @@ def update_role(role_id, role_dict):
     return create_role(role_dict)
 
 
-# @admin_token_required
+@admin_token_required
 def delete_role(role_id):
     role = Role.query.get_or_404(role_id, description=f"{role_id} not found in database.")
     db.session.delete(role)

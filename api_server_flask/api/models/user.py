@@ -24,8 +24,8 @@ class User(db.Model):
     # email = db.Column(db.String(60), unique=True, nullable=False)
     password_hash = db.Column(db.String(60), nullable=False)
 
-    # role_id = db.Column(db.String(32), db.ForeignKey('role.id'), nullable=False)
-    # role = db.relationship('Role', backref=db.backref('users', lazy=True))
+    role_id = db.Column(db.String(32), db.ForeignKey('role.id'), nullable=False)
+    role = db.relationship('Role', backref=db.backref('users', lazy=True))
     # group_id = db.Column(db.String(32), db.ForeignKey('group.id'), nullable=True)
 
     def encode_access_token(self):
@@ -40,7 +40,7 @@ class User(db.Model):
             expire = now + timedelta(hours=token_age_h, minutes=token_age_m)
             if current_app.config["TESTING"]:
                 expire = now + timedelta(seconds=5)
-            payload = {"exp": expire, "iat": now, "sub": self.id}
+            payload = {"exp": expire, "iat": now, "sub": self.id, "role": self.role_id}
             return encode_jwt(
                 payload, current_app.config.get("SECRET_KEY"), algorithm="HS256"
             )
@@ -79,7 +79,8 @@ class User(db.Model):
                 error = "Token blacklisted. Please log in again."
                 return Result.Fail(error)
             return Result.Ok(
-                dict(user_id=payload["sub"], token=token, expires_at=payload["exp"])
+                dict(user_id=payload["sub"], token=token, expires_at=payload["exp"],
+                     role=payload["role"])
             )
         except ExpiredSignatureError:
             error = "Access token expired. Please log in again."

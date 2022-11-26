@@ -7,7 +7,7 @@ class Role(db.Model):
     """Role Model for storing roles of users."""
 
     id = db.Column(db.String(32), primary_key=True, default=create_id())
-    name = db.Column(db.String(20), nullable=False, unique=True)
+    name = db.Column(db.String(20), nullable=False)
 
     def __repr__(self):
         return f"<Role name={self.name}>"
