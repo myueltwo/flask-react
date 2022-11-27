@@ -17,6 +17,8 @@ exclude =  '''
     | build
     | dist
     | venv
+    | migrations
+    | \.migrations
 )/
 '''
 [build-system]
@@ -25,3 +27,16 @@ requires = [
     "setuptools_scm >= 2.0.0, <3"
 ]
 build-backend = "setuptools.build_meta"
+[project]
+name = "score_system"
+description = "Package API of score system"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "BSD 3-Clause License"}
+classifiers = [
+    "Framework :: Flask",
+    "Programming Language :: Python :: 3",
+]
+dynamic = ["version"]
+[tool.setuptools]
+packages=["api"]

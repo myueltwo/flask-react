@@ -1,6 +1,5 @@
 from http import HTTPStatus
 from api_server_flask.api.models.role import Role
-from flask_restx import abort
 from api_server_flask.api import db
 from flask import jsonify, url_for
 from api_server_flask.api.auth.decorators import token_required, admin_token_required
@@ -35,7 +34,9 @@ def retrieve_role_list(page, per_page):
 
 @token_required
 def retrieve_role(role_id):
-    role = Role.query.get_or_404(role_id, description=f"{role_id} not found in database.")
+    role = Role.query.get_or_404(
+        role_id, description=f"{role_id} not found in database."
+    )
     return RoleSchema().dump(role)
 
 
@@ -54,7 +55,9 @@ def update_role(role_id, role_dict):
 
 @admin_token_required
 def delete_role(role_id):
-    role = Role.query.get_or_404(role_id, description=f"{role_id} not found in database.")
+    role = Role.query.get_or_404(
+        role_id, description=f"{role_id} not found in database."
+    )
     db.session.delete(role)
     db.session.commit()
     return "", HTTPStatus.NO_CONTENT

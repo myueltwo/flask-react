@@ -32,6 +32,10 @@ class PaginationSchema(Schema):
 
 
 role_model = get_model_from_schema(RoleSchema, "RoleSchema")
-pagination_load_model = get_model_from_schema(PaginationLoadScheme, "PaginationLoadScheme")
-pagination_links_model = get_model_from_schema(PaginationLinksSchema, "PaginationLinksSchema")
+pagination_load_model = get_model_from_schema(
+    PaginationLoadScheme, "PaginationLoadScheme"
+)
+pagination_links_model = get_model_from_schema(
+    PaginationLinksSchema, "PaginationLinksSchema"
+)
 pagination_model = get_model_from_schema(PaginationSchema, "PaginationSchema")

@@ -25,6 +25,7 @@ class LoginUser(Resource):
     def post(self):
         """Authenticate an existing user and return an access token."""
         from api_server_flask.util.schema_load import parser_schema_load
+
         data = parser_schema_load(user_schema)
         login = data.get("login")
         password = data.get("password")
