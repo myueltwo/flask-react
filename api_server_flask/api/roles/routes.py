@@ -28,12 +28,11 @@ role_ns.models[pagination_model.name] = pagination_model
 
 @role_ns.route("", endpoint="role_list")
 class RoleList(Resource):
-    """Handles HTTP requests to URL: /api/v1/auth/role."""
+    """Handles HTTP requests to URL: /api/v1/roles."""
 
     @role_ns.response(int(HTTPStatus.CREATED), "Added new role.")
     @role_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
-    @role_ns.response(int(HTTPStatus.CONFLICT), "Widget name already exists.")
-    @role_ns.expect(role_model)
+    @role_ns.expect(role_model, validate=False)
     def post(self):
         """Create a role"""
         data = parser_schema_load(RoleSchema())

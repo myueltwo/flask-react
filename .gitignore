@@ -1,6 +1,8 @@
 /api_server_flask/venv/
 /api_server_flask/.tox/
 /api_server_flask/api.egg-info/
+/api_server_flask/api_score_system.egg-info/
+/api_server_flask/score_system.egg-info/
 /api_server_flask/.env
 /api_server_flask/api/api_score_system.egg-info/
 

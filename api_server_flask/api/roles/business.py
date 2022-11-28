@@ -12,7 +12,9 @@ def create_role(role_dict):
     role = Role(**role_dict)
     db.session.add(role)
     db.session.commit()
-    response = jsonify(status="success", message=f"New role added: {name}.")
+    response = jsonify(
+        status="success", message=f"New role added: {name}.", role_id=role.id
+    )
     response.status_code = HTTPStatus.CREATED
     response.headers["Location"] = url_for("api.role", role_id=role.id)
     return response

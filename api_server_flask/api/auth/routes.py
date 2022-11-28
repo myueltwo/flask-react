@@ -57,5 +57,4 @@ class GetUser(Resource):
     def get(self):
         """Validate access token and return user info."""
         user = get_logged_in_user()
-        print(user)
         return user_schema.dump(user)
