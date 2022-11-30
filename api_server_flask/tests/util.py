@@ -87,3 +87,10 @@ def update_role(test_client, access_token, role_id, role_name):
         data=f"name={role_name}",
         content_type="application/x-www-form-urlencoded",
     )
+
+
+def delete_role(test_client, access_token, role_id):
+    return test_client.delete(
+        url_for("api.role", role_id=role_id),
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
