@@ -19,10 +19,21 @@ def create_default_roles(db):
     import os
     from api_server_flask.api.models.role import Role
 
-    role_student = Role(id=os.getenv("ROLE_STUDENT"), name=STUDENT_ROLE_NAME)
-    role_tutor = Role(id=os.getenv("ROLE_TUTOR"), name=TUTOR_ROLE_NAME)
-    role_deans_office = Role(id=os.getenv("ROLE_DECANAT"), name=ADMIN_ROLE_NAME)
-    db.session.add_all([role_student, role_tutor, role_deans_office])
+    role_student_id, role_tutor_id, role_deans_office_id = (
+        os.getenv("ROLE_STUDENT"),
+        os.getenv("ROLE_TUTOR"),
+        os.getenv("ROLE_DECANAT"),
+    )
+
+    if not Role.query.get(role_student_id):
+        role_student = Role(id=os.getenv("ROLE_STUDENT"), name=STUDENT_ROLE_NAME)
+        db.session.add(role_student)
+    if not Role.query.get(role_tutor_id):
+        role_tutor = Role(id=os.getenv("ROLE_TUTOR"), name=TUTOR_ROLE_NAME)
+        db.session.add(role_tutor)
+    if not Role.query.get(role_deans_office_id):
+        role_deans_office = Role(id=os.getenv("ROLE_DECANAT"), name=ADMIN_ROLE_NAME)
+        db.session.add(role_deans_office)
     db.session.commit()
 
 
@@ -58,5 +69,12 @@ def create_role(test_client, access_token, role_name=DEFAULT_ROLE_NAME):
 def retrieve_role_list(test_client, access_token, page=None, per_page=None):
     return test_client.get(
         url_for("api.role_list", page=page, per_page=per_page),
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+
+def retrieve_role(test_client, access_token, role_id):
+    return test_client.get(
+        url_for("api.role", role_id=role_id),
         headers={"Authorization": f"Bearer {access_token}"},
     )
