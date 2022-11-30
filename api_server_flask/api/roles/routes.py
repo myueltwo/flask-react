@@ -65,7 +65,7 @@ class Role(Resource):
     @role_ns.response(int(HTTPStatus.OK), "Role was updated.", role_model)
     @role_ns.response(int(HTTPStatus.CREATED), "Added new role.")
     @role_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
-    @role_ns.expect(role_model)
+    @role_ns.expect(role_model, validate=False)
     def put(self, role_id):
         """Update a role."""
         data = parser_schema_load(RoleSchema())
