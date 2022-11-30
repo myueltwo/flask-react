@@ -3,7 +3,7 @@ import time
 from http import HTTPStatus
 
 from flask import url_for
-from .util import LOGIN, WWW_AUTH_NO_TOKEN, login_user, get_user
+from api_server_flask.tests.util import LOGIN, WWW_AUTH_NO_TOKEN, login_user, get_user
 
 TOKEN_EXPIRED = "Access token expired. Please log in again."
 WWW_AUTH_EXPIRED_TOKEN = (
