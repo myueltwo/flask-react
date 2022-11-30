@@ -20,7 +20,7 @@ def create_role(role_dict):
     return response
 
 
-@token_required
+@admin_token_required
 def retrieve_role_list(page, per_page):
     pagination = Role.query.paginate(page, per_page, error_out=False)
     for item in pagination.items:

@@ -8,15 +8,14 @@ from jwt import (
 from datetime import datetime, timedelta
 from flask import current_app
 from api_server_flask.util.result import Result
-from api_server_flask.api.models.util import create_id
+from api_server_flask.api.models.util import Base
 
 
 def load_user(user_id):
     return User.query.get(user_id)
 
 
-class User(db.Model):
-    id = db.Column(db.String(32), primary_key=True, default=create_id())
+class User(Base):
     name = db.Column(db.String(120), nullable=False)
     surname = db.Column(db.String(120), nullable=False)
     patronymic = db.Column(db.String(120), nullable=False)

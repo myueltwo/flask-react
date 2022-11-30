@@ -39,7 +39,7 @@ class RoleList(Resource):
         return create_role(data)
 
     @role_ns.response(HTTPStatus.OK, "Retrieved role list.", pagination_model)
-    @role_ns.expect(pagination_load_model)
+    @role_ns.expect(pagination_load_model, validate=False)
     def get(self):
         """Get list of roles"""
         data = parser_schema_load(PaginationLoadScheme())

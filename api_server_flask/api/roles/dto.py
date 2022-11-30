@@ -8,8 +8,8 @@ class RoleSchema(Schema):
 
 
 class PaginationLoadScheme(Schema):
-    page = fields.Number(default=1)
-    per_page = fields.Number(validate=validate.OneOf([5, 10, 25, 50, 100]), default=10)
+    page = fields.Int(load_default=1)
+    per_page = fields.Int(validate=validate.OneOf([5, 10, 25, 50, 100]), load_default=10)
 
 
 class PaginationLinksSchema(Schema):

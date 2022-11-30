@@ -10,15 +10,18 @@ FORBIDDEN = "You are not an administrator"
 WWW_AUTH_NO_TOKEN = 'Bearer realm="registered_users@mydomain.com"'
 
 DEFAULT_ROLE_NAME = "some role"
+STUDENT_ROLE_NAME = "Студент"
+TUTOR_ROLE_NAME = "Преподаватель"
+ADMIN_ROLE_NAME = "Деканат"
 
 
 def create_default_roles(db):
     import os
     from api_server_flask.api.models.role import Role
 
-    role_student = Role(id=os.getenv("ROLE_STUDENT"), name="Студент")
-    role_tutor = Role(id=os.getenv("ROLE_TUTOR"), name="Преподаватель")
-    role_deans_office = Role(id=os.getenv("ROLE_DECANAT"), name="Деканат")
+    role_student = Role(id=os.getenv("ROLE_STUDENT"), name=STUDENT_ROLE_NAME)
+    role_tutor = Role(id=os.getenv("ROLE_TUTOR"), name=TUTOR_ROLE_NAME)
+    role_deans_office = Role(id=os.getenv("ROLE_DECANAT"), name=ADMIN_ROLE_NAME)
     db.session.add_all([role_student, role_tutor, role_deans_office])
     db.session.commit()
 
@@ -49,4 +52,11 @@ def create_role(test_client, access_token, role_name=DEFAULT_ROLE_NAME):
         headers={"Authorization": f"Bearer {access_token}"},
         data=f"name={role_name}",
         content_type="application/x-www-form-urlencoded",
+    )
+
+
+def retrieve_role_list(test_client, access_token, page=None, per_page=None):
+    return test_client.get(
+        url_for("api.role_list", page=page, per_page=per_page),
+        headers={"Authorization": f"Bearer {access_token}"},
     )

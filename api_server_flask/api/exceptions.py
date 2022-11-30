@@ -41,7 +41,7 @@ class ApiForbidden(Forbidden):
 
     description = "You are not an administrator"
 
-    def get_headers(self, environ):
+    def get_headers(self, environ, scope):
         return [
             ("Content-Type", "text/html"),
             (
