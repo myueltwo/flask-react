@@ -20,12 +20,11 @@ class User(Base):
     surname = db.Column(db.String(120), nullable=False)
     patronymic = db.Column(db.String(120), nullable=False)
     login = db.Column(db.String(20), unique=True, nullable=False)
-    # email = db.Column(db.String(60), unique=True, nullable=False)
     password_hash = db.Column(db.String(60), nullable=False)
 
     role_id = db.Column(db.String(32), db.ForeignKey("role.id"), nullable=False)
     role = db.relationship("Role", backref=db.backref("users", lazy=True))
-    # group_id = db.Column(db.String(32), db.ForeignKey('group.id'), nullable=True)
+    group_id = db.Column(db.String(32), db.ForeignKey("group.id"), nullable=True)
 
     def encode_access_token(self):
         """

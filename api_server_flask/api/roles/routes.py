@@ -2,12 +2,12 @@
 from http import HTTPStatus
 
 from flask_restx import Namespace, Resource
-from api_server_flask.api.roles.dto import (
-    role_model,
+from api_server_flask.util.widget.dto import (
+    widget_model,
     pagination_load_model,
     pagination_links_model,
     pagination_model,
-    RoleSchema,
+    WidgetSchema,
     PaginationLoadScheme,
 )
 from api_server_flask.api.roles.business import (
@@ -20,7 +20,7 @@ from api_server_flask.api.roles.business import (
 from api_server_flask.util.schema_load import parser_schema_load
 
 role_ns = Namespace(name="role", description="Store of roles by users", validate=True)
-role_ns.models[role_model.name] = role_model
+role_ns.models[widget_model.name] = widget_model
 role_ns.models[pagination_load_model.name] = pagination_load_model
 role_ns.models[pagination_links_model.name] = pagination_links_model
 role_ns.models[pagination_model.name] = pagination_model
@@ -32,10 +32,10 @@ class RoleList(Resource):
 
     @role_ns.response(int(HTTPStatus.CREATED), "Added new role.")
     @role_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
-    @role_ns.expect(role_model, validate=False)
+    @role_ns.expect(widget_model, validate=False)
     def post(self):
         """Create a role"""
-        data = parser_schema_load(RoleSchema())
+        data = parser_schema_load(WidgetSchema())
         return create_role(data)
 
     @role_ns.response(HTTPStatus.OK, "Retrieved role list.", pagination_model)
@@ -57,18 +57,18 @@ class RoleList(Resource):
 class Role(Resource):
     """Handles HTTP requests to URL: /roles/{role_id}."""
 
-    @role_ns.response(int(HTTPStatus.OK), "Retrieved role.", role_model)
+    @role_ns.response(int(HTTPStatus.OK), "Retrieved role.", widget_model)
     def get(self, role_id):
         """Retrieve a role."""
         return retrieve_role(role_id)
 
-    @role_ns.response(int(HTTPStatus.OK), "Role was updated.", role_model)
+    @role_ns.response(int(HTTPStatus.OK), "Role was updated.", widget_model)
     @role_ns.response(int(HTTPStatus.CREATED), "Added new role.")
     @role_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
-    @role_ns.expect(role_model, validate=False)
+    @role_ns.expect(widget_model, validate=False)
     def put(self, role_id):
         """Update a role."""
-        data = parser_schema_load(RoleSchema())
+        data = parser_schema_load(WidgetSchema())
         return update_role(role_id, data)
 
     @role_ns.response(int(HTTPStatus.NO_CONTENT), "Role was deleted.")

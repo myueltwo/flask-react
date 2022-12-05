@@ -2,6 +2,7 @@ from api_server_flask.api import create_app, db
 from api_server_flask.api.models.user import User
 from api_server_flask.api.models.black_listed_token import BlacklistedToken
 from api_server_flask.api.models.role import Role
+from api_server_flask.api.models.group import Group
 import os
 import click
 from api_server_flask.api.models.util import create_id
@@ -12,7 +13,13 @@ app = create_app(os.getenv("FLASK_ENV", "development"))
 
 @app.shell_context_processor
 def shell():
-    return {"db": db, "User": User, "BlacklistedToken": BlacklistedToken, "Role": Role}
+    return {
+        "db": db,
+        "User": User,
+        "BlacklistedToken": BlacklistedToken,
+        "Role": Role,
+        "Group": Group,
+    }
 
 
 @app.cli.command("add-default-roles", short_help="Add default roles")

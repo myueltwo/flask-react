@@ -40,9 +40,11 @@ def create_api_bp():
     )
     from .auth.routes import auth_ns
     from .roles.routes import role_ns
+    from .groups.routes import group_ns
 
     rest_api.add_namespace(auth_ns, path="/auth")
     rest_api.add_namespace(role_ns, path="/roles")
+    rest_api.add_namespace(group_ns, path="/groups")
     return api_bp
 
 
