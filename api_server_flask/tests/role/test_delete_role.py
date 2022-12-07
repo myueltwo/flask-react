@@ -19,8 +19,8 @@ def test_delete_widget(client, db, admin):
     access_token = response.json["access_token"]
     response = create_role(client, access_token)
     assert response.status_code == HTTPStatus.CREATED
-    assert "role_id" in response.json
-    role_id = response.json["role_id"]
+    assert "widget_id" in response.json
+    role_id = response.json["widget_id"]
     assert role_id
     response = delete_role(client, access_token, role_id=role_id)
     assert response.status_code == HTTPStatus.NO_CONTENT
@@ -41,8 +41,8 @@ def test_delete_widget_no_admin_token(client, db, admin, user):
     access_token = response.json["access_token"]
     response = create_role(client, access_token)
     assert response.status_code == HTTPStatus.CREATED
-    assert "role_id" in response.json
-    role_id = response.json["role_id"]
+    assert "widget_id" in response.json
+    role_id = response.json["widget_id"]
     assert role_id
 
     response = login_user(client, login=LOGIN)

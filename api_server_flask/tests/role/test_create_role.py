@@ -23,9 +23,9 @@ def test_create_role_valid_name(client, db, admin, role_name):
     assert "status" in response.json and response.json["status"] == "success"
     success = f"New role added: {role_name}."
     assert "message" in response.json and response.json["message"] == success
-    assert "role_id" in response.json and response.json["role_id"]
-    role_id = response.json["role_id"]
-    location = url_for("api.role", role_id=role_id)
+    assert "widget_id" in response.json and response.json["widget_id"]
+    role_id = response.json["widget_id"]
+    location = url_for("api.role", widget_id=role_id)
     assert "Location" in response.headers and response.headers["Location"] == location
 
 

@@ -75,14 +75,14 @@ def retrieve_role_list(test_client, access_token, page=None, per_page=None):
 
 def retrieve_role(test_client, access_token, role_id):
     return test_client.get(
-        url_for("api.role", role_id=role_id),
+        url_for("api.role", widget_id=role_id),
         headers={"Authorization": f"Bearer {access_token}"},
     )
 
 
 def update_role(test_client, access_token, role_id, role_name):
     return test_client.put(
-        url_for("api.role", role_id=role_id),
+        url_for("api.role", widget_id=role_id),
         headers={"Authorization": f"Bearer {access_token}"},
         data=f"name={role_name}",
         content_type="application/x-www-form-urlencoded",
@@ -91,6 +91,6 @@ def update_role(test_client, access_token, role_id, role_name):
 
 def delete_role(test_client, access_token, role_id):
     return test_client.delete(
-        url_for("api.role", role_id=role_id),
+        url_for("api.role", widget_id=role_id),
         headers={"Authorization": f"Bearer {access_token}"},
     )

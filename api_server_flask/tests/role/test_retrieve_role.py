@@ -19,7 +19,7 @@ def test_retrieve_widget_non_admin_user(client, db, admin, user):
     access_token = response.json["access_token"]
     response = create_role(client, access_token)
     assert response.status_code == HTTPStatus.CREATED
-    role_id = response.json["role_id"]
+    role_id = response.json["widget_id"]
     assert role_id
 
     response = login_user(client, login=LOGIN)

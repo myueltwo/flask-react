@@ -21,7 +21,7 @@ def test_update_role(client, db, admin):
     access_token = response.json["access_token"]
     response = create_role(client, access_token)
     assert response.status_code == HTTPStatus.CREATED
-    role_id = response.json["role_id"]
+    role_id = response.json["widget_id"]
     assert role_id
 
     response = update_role(
@@ -45,8 +45,8 @@ def test_update_role_not_admin(client, db, admin, user):
     access_token = response.json["access_token"]
     response = create_role(client, access_token)
     assert response.status_code == HTTPStatus.CREATED
-    assert "role_id" in response.json
-    role_id = response.json["role_id"]
+    assert "widget_id" in response.json
+    role_id = response.json["widget_id"]
     assert role_id
 
     response = login_user(client, login=LOGIN)
@@ -80,8 +80,8 @@ def test_update_role_not_exist(client, db, admin):
     assert "status" in response.json and response.json["status"] == "success"
     success = f"New role added: {UPDATED_DEFAULT_ROLE_NAME}."
     assert "message" in response.json and response.json["message"] == success
-    assert "role_id" in response.json
-    role_id = response.json["role_id"]
+    assert "widget_id" in response.json
+    role_id = response.json["widget_id"]
     response = retrieve_role(client, access_token, role_id=role_id)
     assert response.status_code == HTTPStatus.OK
 

@@ -1,0 +1,104 @@
+from http import HTTPStatus
+from api_server_flask.api import db
+from flask import jsonify, url_for
+from api_server_flask.api.auth.decorators import token_required, admin_token_required
+from api_server_flask.util.widget.dto import PaginationSchema, WidgetSchema
+
+
+class Widget:
+    """Class for simple action on model"""
+
+    def __init__(self, model: db.Model, url, url_list, name):
+        self.Model = model
+        self.url = url
+        self.url_list = url_list
+        self.name = name
+
+    def __str__(self):
+        """Informal string representation of a widget."""
+        return self.name
+
+    def __repr__(self):
+        """Official string representation of a widget."""
+        return f"<Widget name={self.name} model={self.Model}>"
+
+    @admin_token_required
+    def create_widget(self, widget_dict):
+        name = widget_dict.get("name")
+        widget = self.Model(**widget_dict)
+        db.session.add(widget)
+        db.session.commit()
+        response = jsonify(
+            status="success",
+            message=f"New {self.name} added: {name}.",
+            widget_id=widget.id,
+        )
+        response.status_code = HTTPStatus.CREATED
+        response.headers["Location"] = url_for(self.url, widget_id=widget.id)
+        return response
+
+    @admin_token_required
+    def retrieve_widget_list(self, page, per_page):
+        pagination = self.Model.query.paginate(page, per_page, error_out=False)
+        for item in pagination.items:
+            setattr(item, "link", url_for(self.url, widget_id=item.id))
+        pagination_schema = PaginationSchema()
+        response_data = pagination_schema.dump(pagination)
+        response_data["links"] = self._pagination_nav_links(pagination)
+        response = jsonify(response_data)
+        response.headers["Link"] = self._pagination_nav_header_links(pagination)
+        response.headers["Total-Count"] = pagination.total
+        return response
+
+    @token_required
+    def retrieve_widget(self, widget_id):
+        widget = self.Model.query.get_or_404(
+            widget_id, description=f"{widget_id} not found in database."
+        )
+        return WidgetSchema().dump(widget)
+
+    @admin_token_required
+    def update_widget(self, widget_id, role_dict):
+        widget = self.Model.query.get(widget_id)
+        if widget:
+            for k, v in role_dict.items():
+                setattr(widget, k, v)
+            db.session.commit()
+            message = f"'{widget_id}' was successfully updated"
+            response_dict = dict(status="success", message=message)
+            return response_dict, HTTPStatus.OK
+        return self.create_widget(role_dict)
+
+    @admin_token_required
+    def delete_widget(self, widget_id):
+        widget = self.Model.query.get_or_404(
+            widget_id, description=f"{widget_id} not found in database."
+        )
+        db.session.delete(widget)
+        db.session.commit()
+        return "", HTTPStatus.NO_CONTENT
+
+    def _pagination_nav_links(self, pagination):
+        nav_links = {}
+        per_page = pagination.per_page
+        this_page = pagination.page
+        last_page = pagination.pages
+        nav_links["self"] = url_for(self.url_list, page=this_page, per_page=per_page)
+        nav_links["first"] = url_for(self.url_list, page=1, per_page=per_page)
+        if pagination.has_prev:
+            nav_links["prev"] = url_for(
+                self.url_list, page=this_page - 1, per_page=per_page
+            )
+        if pagination.has_next:
+            nav_links["next"] = url_for(
+                self.url_list, page=this_page + 1, per_page=per_page
+            )
+        nav_links["last"] = url_for(self.url_list, page=last_page, per_page=per_page)
+        return nav_links
+
+    def _pagination_nav_header_links(self, pagination):
+        url_dict = self._pagination_nav_links(pagination)
+        link_header = ""
+        for rel, url in url_dict.items():
+            link_header += f'<{url}>; rel="{rel}", '
+        return link_header.strip().strip(",")
