@@ -14,7 +14,7 @@ from api_server_flask.util.widget.dto import (
 from api_server_flask.util.widget.business import Widget
 from api_server_flask.util.schema_load import parser_schema_load
 
-role_ns = Namespace(name="role", description="Store of roles by users", validate=True)
+role_ns = Namespace(name="role", description="Store of roles by users")
 role_ns.models[widget_model.name] = widget_model
 role_ns.models[pagination_load_model.name] = pagination_load_model
 role_ns.models[pagination_links_model.name] = pagination_links_model
@@ -28,14 +28,14 @@ class RoleList(Resource):
 
     @role_ns.response(int(HTTPStatus.CREATED), "Added new role.")
     @role_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
-    @role_ns.expect(widget_model, validate=False)
+    @role_ns.expect(widget_model)
     def post(self):
         """Create a role"""
         data = parser_schema_load(WidgetSchema())
         return role_widget.create_widget(data)
 
     @role_ns.response(HTTPStatus.OK, "Retrieved role list.", pagination_model)
-    @role_ns.expect(pagination_load_model, validate=False)
+    @role_ns.expect(pagination_load_model)
     def get(self):
         """Get list of roles"""
         data = parser_schema_load(PaginationLoadScheme())
