@@ -1,8 +1,14 @@
 from http import HTTPStatus
 from api_server_flask.api import db
 from flask import jsonify, url_for
+from flask_restx import Namespace
 from api_server_flask.api.auth.decorators import token_required, admin_token_required
-from api_server_flask.util.widget.dto import PaginationSchema, WidgetSchema
+from api_server_flask.util.widget.dto import (
+    PaginationSchema,
+    WidgetSchema,
+    PaginationLoadScheme,
+)
+from api_server_flask.util.schema_load import parser_schema_load
 
 
 class Widget:
@@ -102,3 +108,34 @@ class Widget:
         for rel, url in url_dict.items():
             link_header += f'<{url}>; rel="{rel}", '
         return link_header.strip().strip(",")
+
+
+def add_models(ns: Namespace):
+    from api_server_flask.util.widget.dto import (
+        widget_model,
+        pagination_load_model,
+        pagination_links_model,
+        pagination_model,
+    )
+
+    ns.models[widget_model.name] = widget_model
+    ns.models[pagination_load_model.name] = pagination_load_model
+    ns.models[pagination_links_model.name] = pagination_links_model
+    ns.models[pagination_model.name] = pagination_model
+
+
+def create_widget_parser(widget: Widget):
+    data = parser_schema_load(WidgetSchema())
+    return widget.create_widget(data)
+
+
+def retrieve_widget_list_parser(widget: Widget):
+    data = parser_schema_load(PaginationLoadScheme())
+    page = data.get("page")
+    per_page = data.get("per_page")
+    return widget.retrieve_widget_list(page, per_page)
+
+
+def update_widget_parser(widget: Widget, widget_id):
+    data = parser_schema_load(WidgetSchema())
+    return widget.update_widget(widget_id, data)

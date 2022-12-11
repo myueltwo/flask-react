@@ -6,19 +6,18 @@ from api_server_flask.api.models.role import Role
 from api_server_flask.util.widget.dto import (
     widget_model,
     pagination_load_model,
-    pagination_links_model,
     pagination_model,
-    WidgetSchema,
-    PaginationLoadScheme,
 )
-from api_server_flask.util.widget.business import Widget
-from api_server_flask.util.schema_load import parser_schema_load
+from api_server_flask.util.widget.business import (
+    Widget,
+    add_models,
+    create_widget_parser,
+    retrieve_widget_list_parser,
+    update_widget_parser,
+)
 
 role_ns = Namespace(name="role", description="Store of roles by users")
-role_ns.models[widget_model.name] = widget_model
-role_ns.models[pagination_load_model.name] = pagination_load_model
-role_ns.models[pagination_links_model.name] = pagination_links_model
-role_ns.models[pagination_model.name] = pagination_model
+add_models(role_ns)
 role_widget = Widget(model=Role, name="role", url="api.role", url_list="api.role_list")
 
 
@@ -31,17 +30,13 @@ class RoleList(Resource):
     @role_ns.expect(widget_model)
     def post(self):
         """Create a role"""
-        data = parser_schema_load(WidgetSchema())
-        return role_widget.create_widget(data)
+        return create_widget_parser(role_widget)
 
     @role_ns.response(HTTPStatus.OK, "Retrieved role list.", pagination_model)
     @role_ns.expect(pagination_load_model)
     def get(self):
         """Get list of roles"""
-        data = parser_schema_load(PaginationLoadScheme())
-        page = data.get("page")
-        per_page = data.get("per_page")
-        return role_widget.retrieve_widget_list(page, per_page)
+        return retrieve_widget_list_parser(role_widget)
 
 
 @role_ns.route("/<widget_id>", endpoint="role")
@@ -64,8 +59,7 @@ class Role(Resource):
     @role_ns.expect(widget_model, validate=False)
     def put(self, widget_id):
         """Update a role."""
-        data = parser_schema_load(WidgetSchema())
-        return role_widget.update_widget(widget_id, data)
+        return update_widget_parser(role_widget, widget_id)
 
     @role_ns.response(int(HTTPStatus.NO_CONTENT), "Role was deleted.")
     @role_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
