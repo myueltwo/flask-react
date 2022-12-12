@@ -1,38 +1,15 @@
-"""Unit test for POST request sent to api.role_list API endoiint"""
+"""Unit test for POST request sent to api.role_list API endoint"""
 
-from http import HTTPStatus
-from flask import url_for
 import pytest
-from api_server_flask.tests.util import (
-    LOGIN,
-    ADMIN_LOGIN,
-    ADMIN_PASSWORD,
-    FORBIDDEN,
-    login_user,
-    create_role,
-)
+from api_server_flask.tests.widget.util import TestWidget
+
+role_widget = TestWidget(url="api.role", url_list="api.role_list", name="role")
 
 
 @pytest.mark.parametrize("role_name", ["abc123", "role-name", "new_role1"])
 def test_create_role_valid_name(client, db, admin, role_name):
-    response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
-    assert "access_token" in response.json
-    access_token = response.json["access_token"]
-    response = create_role(client, access_token, role_name=role_name)
-    assert response.status_code == HTTPStatus.CREATED
-    assert "status" in response.json and response.json["status"] == "success"
-    success = f"New role added: {role_name}."
-    assert "message" in response.json and response.json["message"] == success
-    assert "widget_id" in response.json and response.json["widget_id"]
-    role_id = response.json["widget_id"]
-    location = url_for("api.role", widget_id=role_id)
-    assert "Location" in response.headers and response.headers["Location"] == location
+    role_widget.create_valid_name(client=client, widget_name=role_name)
 
 
 def test_create_role_no_admin_token(client, db, user):
-    response = login_user(client, login=LOGIN)
-    assert "access_token" in response.json
-    access_token = response.json["access_token"]
-    response = create_role(client, access_token)
-    assert response.status_code == HTTPStatus.FORBIDDEN
-    assert "message" in response.json and response.json["message"] == FORBIDDEN
+    role_widget.create_no_admin_token(client=client)
