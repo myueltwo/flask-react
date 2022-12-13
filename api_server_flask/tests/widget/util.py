@@ -11,6 +11,15 @@ from api_server_flask.tests.util import (
 DEFAULT_NAME = "some name"
 UPDATED_DEFAULT_NAME = "update some name2"
 
+NAMES = [
+    "widget1",
+    "second_widget",
+    "widget-thrice",
+    "tetraWIDGET",
+    "PENTA-widget-GON-et",
+    "hexa_widget",
+]
+
 
 def create(test_client, access_token, url, name=DEFAULT_NAME):
     return test_client.post(
@@ -132,7 +141,7 @@ class TestWidget:
         assert response.status_code == HTTPStatus.FORBIDDEN
         assert "message" in response.json and response.json["message"] == FORBIDDEN
 
-    def retrieve_widget_non_admin_user(self, client):
+    def retrieve_non_admin_user(self, client):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
@@ -149,7 +158,7 @@ class TestWidget:
 
         assert "name" in response.json and response.json["name"] == DEFAULT_NAME
 
-    def retrieve_widget_does_not_exist(self, client):
+    def retrieve_does_not_exist(self, client):
         response = login_user(client, login=LOGIN)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
@@ -165,7 +174,7 @@ class TestWidget:
             and f"{not_exist_role_id} not found in database" in response.json["message"]
         )
 
-    def update_role(self, client):
+    def update(self, client):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
@@ -189,7 +198,7 @@ class TestWidget:
 
         assert "name" in response.json and response.json["name"] == UPDATED_DEFAULT_NAME
 
-    def update_role_not_admin(self, client):
+    def update_not_admin(self, client):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
@@ -212,7 +221,7 @@ class TestWidget:
         assert response.status_code == HTTPStatus.FORBIDDEN
         assert "message" in response.json and response.json["message"] == FORBIDDEN
 
-    def update_role_not_exist(self, client):
+    def update_not_exist(self, client):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
@@ -237,3 +246,128 @@ class TestWidget:
         assert response.status_code == HTTPStatus.OK
 
         assert "name" in response.json and response.json["name"] == UPDATED_DEFAULT_NAME
+
+    def retrieve_paginated_list(self, client, default_names=None):
+        if default_names is None:
+            default_names = []
+        response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
+        assert "access_token" in response.json
+        access_token = response.json["access_token"]
+
+        # Maximum of default_names can be 3
+        assert len(default_names) <= 3
+
+        # ADD SIX ROLE INSTANCES TO DATABASE
+        for i in range(0, len(NAMES)):
+            response = create(
+                client,
+                access_token,
+                url=self.url_list,
+                name=NAMES[i],
+            )
+            assert response.status_code == HTTPStatus.CREATED
+
+        names_with_default = default_names.copy()
+        names_with_default.extend(NAMES)
+        total_count_roles = len(names_with_default)
+
+        # REQUEST PAGINATED LIST OF ROLES: 5 PER PAGE, PAGE #1
+        response = retrieve_list(
+            client, access_token, url=self.url_list, page=1, per_page=5
+        )
+        assert response.status_code == HTTPStatus.OK
+
+        # VERIFY PAGINATION ATTRIBUTES FOR PAGE #1
+        assert "has_prev" in response.json and not response.json["has_prev"]
+        assert "has_next" in response.json and response.json["has_next"]
+        assert "page" in response.json and response.json["page"] == 1
+        assert "total_pages" in response.json and response.json["total_pages"] == 2
+        assert "items_per_page" in response.json and response.json["items_per_page"] == 5
+        assert (
+            "total_items" in response.json
+            and response.json["total_items"] == total_count_roles
+        )
+        assert "items" in response.json and len(response.json["items"]) == 5
+
+        # VERIFY ATTRIBUTES OF ROLES #1-5
+        for i in range(0, len(response.json["items"])):
+            item = response.json["items"][i]
+            assert "name" in item and item["name"] == names_with_default[i]
+
+        # REQUEST PAGINATED LIST OF WIDGETS: 5 PER PAGE, PAGE #2
+        response = retrieve_list(
+            client, access_token, url=self.url_list, page=2, per_page=5
+        )
+        assert response.status_code == HTTPStatus.OK
+
+        # VERIFY PAGINATION ATTRIBUTES FOR PAGE #2
+        assert "has_prev" in response.json and response.json["has_prev"]
+        assert "has_next" in response.json and not response.json["has_next"]
+        assert "page" in response.json and response.json["page"] == 2
+        assert "total_pages" in response.json and response.json["total_pages"] == 2
+        assert "items_per_page" in response.json and response.json["items_per_page"] == 5
+        assert (
+            "total_items" in response.json
+            and response.json["total_items"] == total_count_roles
+        )
+        assert (
+            "items" in response.json
+            and len(response.json["items"]) == total_count_roles - 5
+        )
+
+        # VERIFY ATTRIBUTES OF ROLES #6-9
+        for i in range(5, response.json["total_items"]):
+            item = response.json["items"][i - 5]
+            assert "name" in item and item["name"] == names_with_default[i]
+
+        # REQUEST PAGINATED LIST OF WIDGETS: 10 PER PAGE, PAGE #1
+        response = retrieve_list(
+            client, access_token, url=self.url_list, page=1, per_page=10
+        )
+        assert response.status_code == HTTPStatus.OK
+
+        # VERIFY PAGINATION ATTRIBUTES FOR PAGE #1
+        assert "has_prev" in response.json and not response.json["has_prev"]
+        assert "has_next" in response.json and not response.json["has_next"]
+        assert "page" in response.json and response.json["page"] == 1
+        assert "total_pages" in response.json and response.json["total_pages"] == 1
+        assert (
+            "items_per_page" in response.json and response.json["items_per_page"] == 10
+        )
+        assert (
+            "total_items" in response.json
+            and response.json["total_items"] == total_count_roles
+        )
+        assert (
+            "items" in response.json and len(response.json["items"]) == total_count_roles
+        )
+
+        # VERIFY ATTRIBUTES OF ROLES #1-9
+        for i in range(0, len(response.json["items"])):
+            item = response.json["items"][i]
+            assert "name" in item and item["name"] == names_with_default[i]
+
+        # REQUEST PAGINATED LIST OF ROLES: DEFAULT PARAMETERS
+        response = retrieve_list(client, access_token, url=self.url_list)
+        assert response.status_code == HTTPStatus.OK
+
+        # VERIFY PAGINATION ATTRIBUTES FOR PAGE #1
+        assert "has_prev" in response.json and not response.json["has_prev"]
+        assert "has_next" in response.json and not response.json["has_next"]
+        assert "page" in response.json and response.json["page"] == 1
+        assert "total_pages" in response.json and response.json["total_pages"] == 1
+        assert (
+            "items_per_page" in response.json and response.json["items_per_page"] == 10
+        )
+        assert (
+            "total_items" in response.json
+            and response.json["total_items"] == total_count_roles
+        )
+        assert (
+            "items" in response.json and len(response.json["items"]) == total_count_roles
+        )
+
+        # VERIFY ATTRIBUTES OF WIDGETS #1-9
+        for i in range(0, len(response.json["items"])):
+            item = response.json["items"][i]
+            assert "name" in item and item["name"] == names_with_default[i]

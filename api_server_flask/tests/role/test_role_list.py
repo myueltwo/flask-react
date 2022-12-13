@@ -2,6 +2,11 @@
 
 import pytest
 from api_server_flask.tests.widget.util import TestWidget
+from api_server_flask.tests.util import (
+    STUDENT_ROLE_NAME,
+    TUTOR_ROLE_NAME,
+    ADMIN_ROLE_NAME,
+)
 
 role_widget = TestWidget(url="api.role", url_list="api.role_list", name="role")
 
@@ -13,3 +18,9 @@ def test_create_role_valid_name(client, db, admin, role_name):
 
 def test_create_role_no_admin_token(client, db, user):
     role_widget.create_no_admin_token(client=client)
+
+
+def test_retrieve_paginated_role_list(client, db, admin):
+    role_widget.retrieve_paginated_list(
+        client, default_names=[STUDENT_ROLE_NAME, TUTOR_ROLE_NAME, ADMIN_ROLE_NAME]
+    )
