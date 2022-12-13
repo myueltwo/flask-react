@@ -8,19 +8,19 @@ from api_server_flask.tests.util import (
     ADMIN_ROLE_NAME,
 )
 
-role_widget = TestWidget(url="api.role", url_list="api.role_list", name="role")
+widget = TestWidget(url="api.role", url_list="api.role_list", name="role")
 
 
-@pytest.mark.parametrize("role_name", ["abc123", "role-name", "new_role1"])
-def test_create_role_valid_name(client, db, admin, role_name):
-    role_widget.create_valid_name(client=client, widget_name=role_name)
+@pytest.mark.parametrize("name", ["abc123", "role-name", "new_role1"])
+def test_create_role_valid_name(client, db, admin, name):
+    widget.create_valid_name(client=client, widget_name=name)
 
 
 def test_create_role_no_admin_token(client, db, user):
-    role_widget.create_no_admin_token(client=client)
+    widget.create_no_admin_token(client=client)
 
 
 def test_retrieve_paginated_role_list(client, db, admin):
-    role_widget.retrieve_paginated_list(
+    widget.retrieve_paginated_list(
         client, default_names=[STUDENT_ROLE_NAME, TUTOR_ROLE_NAME, ADMIN_ROLE_NAME]
     )
