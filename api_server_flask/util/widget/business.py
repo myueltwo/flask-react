@@ -7,6 +7,10 @@ from api_server_flask.util.widget.dto import (
     PaginationSchema,
     WidgetSchema,
     PaginationLoadScheme,
+    widget_model,
+    pagination_load_model,
+    pagination_links_model,
+    pagination_model,
 )
 from api_server_flask.util.schema_load import parser_schema_load
 
@@ -14,11 +18,25 @@ from api_server_flask.util.schema_load import parser_schema_load
 class Widget:
     """Class for simple action on model"""
 
-    def __init__(self, model: db.Model, url, url_list, name):
+    def __init__(
+        self,
+        model: db.Model,
+        url,
+        url_list,
+        name,
+        schema=None,
+        pagination_schema=None,
+    ):
         self.Model = model
         self.url = url
         self.url_list = url_list
         self.name = name
+        if schema is None:
+            schema = WidgetSchema
+        self.schema = schema
+        if pagination_schema is None:
+            pagination_schema = PaginationSchema
+        self.pagination_schema = pagination_schema
 
     def __str__(self):
         """Informal string representation of a widget."""
@@ -48,7 +66,7 @@ class Widget:
         pagination = self.Model.query.paginate(page, per_page, error_out=False)
         for item in pagination.items:
             setattr(item, "link", url_for(self.url, widget_id=item.id))
-        pagination_schema = PaginationSchema()
+        pagination_schema = self.pagination_schema()
         response_data = pagination_schema.dump(pagination)
         response_data["links"] = self._pagination_nav_links(pagination)
         response = jsonify(response_data)
@@ -110,22 +128,15 @@ class Widget:
         return link_header.strip().strip(",")
 
 
-def add_models(ns: Namespace):
-    from api_server_flask.util.widget.dto import (
-        widget_model,
-        pagination_load_model,
-        pagination_links_model,
-        pagination_model,
-    )
-
-    ns.models[widget_model.name] = widget_model
+def add_models(ns: Namespace, model=widget_model, pagination=pagination_model):
+    ns.models[model.name] = model
     ns.models[pagination_load_model.name] = pagination_load_model
     ns.models[pagination_links_model.name] = pagination_links_model
-    ns.models[pagination_model.name] = pagination_model
+    ns.models[pagination.name] = pagination
 
 
 def create_widget_parser(widget: Widget):
-    data = parser_schema_load(WidgetSchema())
+    data = parser_schema_load(widget.schema())
     return widget.create_widget(data)
 
 
@@ -137,5 +148,5 @@ def retrieve_widget_list_parser(widget: Widget):
 
 
 def update_widget_parser(widget: Widget, widget_id):
-    data = parser_schema_load(WidgetSchema())
+    data = parser_schema_load(widget.schema())
     return widget.update_widget(widget_id, data)

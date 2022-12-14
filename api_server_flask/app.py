@@ -3,6 +3,7 @@ from api_server_flask.api.models.user import User
 from api_server_flask.api.models.black_listed_token import BlacklistedToken
 from api_server_flask.api.models.role import Role
 from api_server_flask.api.models.group import Group
+from api_server_flask.api.models.subject import Subject
 import os
 import click
 from api_server_flask.api.models.util import create_id
@@ -19,6 +20,7 @@ def shell():
         "BlacklistedToken": BlacklistedToken,
         "Role": Role,
         "Group": Group,
+        "Subject": Subject,
     }
 
 
