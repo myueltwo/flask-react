@@ -48,13 +48,12 @@ class Widget:
 
     @admin_token_required
     def create_widget(self, widget_dict):
-        name = widget_dict.get("name")
         widget = self.Model(**widget_dict)
         db.session.add(widget)
         db.session.commit()
         response = jsonify(
             status="success",
-            message=f"New {self.name} added: {name}.",
+            message=f"New {self.name} added: {widget.id}.",
             widget_id=widget.id,
         )
         response.status_code = HTTPStatus.CREATED

@@ -21,11 +21,11 @@ NAMES = [
 ]
 
 
-def create(test_client, access_token, url, name=DEFAULT_NAME):
+def create(test_client, access_token, url, widget_dict):
     return test_client.post(
         url_for(url),
         headers={"Authorization": f"Bearer {access_token}"},
-        data=f"name={name}",
+        data="&".join([f"{k}={v}" for k, v in widget_dict.items()]),
         content_type="application/x-www-form-urlencoded",
     )
 
@@ -44,11 +44,11 @@ def retrieve(test_client, access_token, url, widget_id):
     )
 
 
-def update(test_client, access_token, url, widget_id, name):
+def update(test_client, access_token, url, widget_id, widget_dict):
     return test_client.put(
         url_for(url, widget_id=widget_id),
         headers={"Authorization": f"Bearer {access_token}"},
-        data=f"name={name}",
+        data="&".join([f"{k}={v}" for k, v in widget_dict.items()]),
         content_type="application/x-www-form-urlencoded",
     )
 
@@ -66,10 +66,16 @@ class TestWidget:
     # Prevent pytest from trying to collect webtest's TestWidget as tests:
     __test__ = False
 
-    def __init__(self, url, url_list, name):
+    def __init__(self, url, url_list, name, widget_dict=None, widget_dict_updated=None):
         self.url = url
         self.url_list = url_list
         self.name = name
+        if not widget_dict:
+            self.widget_dict = {"name": DEFAULT_NAME}
+        if not widget_dict_updated:
+            self.widget_dict_updated = {
+                "name": UPDATED_DEFAULT_NAME,
+            }
 
     def __str__(self):
         """Informal string representation of a widget."""
@@ -83,14 +89,17 @@ class TestWidget:
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
-        response = create(client, access_token, url=self.url_list, name=widget_name)
+        response = create(
+            client, access_token, url=self.url_list, widget_dict={"name": widget_name}
+        )
         assert response.status_code == HTTPStatus.CREATED
-        assert "status" in response.json and response.json["status"] == "success"
-        success = f"New {self.name} added: {widget_name}."
-        assert "message" in response.json and response.json["message"] == success
         assert "widget_id" in response.json and response.json["widget_id"]
-        role_id = response.json["widget_id"]
-        location = url_for(self.url, widget_id=role_id)
+        widget_id = response.json["widget_id"]
+        assert "status" in response.json and response.json["status"] == "success"
+        success = f"New {self.name} added: {widget_id}."
+        assert "message" in response.json and response.json["message"] == success
+
+        location = url_for(self.url, widget_id=widget_id)
         assert (
             "Location" in response.headers and response.headers["Location"] == location
         )
@@ -99,7 +108,9 @@ class TestWidget:
         response = login_user(client, login=LOGIN)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
-        response = create(client, access_token, url=self.url_list)
+        response = create(
+            client, access_token, url=self.url_list, widget_dict=self.widget_dict
+        )
         assert response.status_code == HTTPStatus.FORBIDDEN
         assert "message" in response.json and response.json["message"] == FORBIDDEN
 
@@ -107,7 +118,9 @@ class TestWidget:
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
-        response = create(client, access_token, url=self.url_list)
+        response = create(
+            client, access_token, url=self.url_list, widget_dict=self.widget_dict
+        )
         assert response.status_code == HTTPStatus.CREATED
         assert "widget_id" in response.json
         widget_id = response.json["widget_id"]
@@ -128,7 +141,9 @@ class TestWidget:
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
-        response = create(client, access_token, url=self.url_list)
+        response = create(
+            client, access_token, url=self.url_list, widget_dict=self.widget_dict
+        )
         assert response.status_code == HTTPStatus.CREATED
         assert "widget_id" in response.json
         widget_id = response.json["widget_id"]
@@ -145,7 +160,9 @@ class TestWidget:
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
-        response = create(client, access_token, url=self.url_list)
+        response = create(
+            client, access_token, url=self.url_list, widget_dict=self.widget_dict
+        )
         assert response.status_code == HTTPStatus.CREATED
         widget_id = response.json["widget_id"]
         assert widget_id
@@ -156,7 +173,8 @@ class TestWidget:
         response = retrieve(client, access_token, url=self.url, widget_id=widget_id)
         assert response.status_code == HTTPStatus.OK
 
-        assert "name" in response.json and response.json["name"] == DEFAULT_NAME
+        for k, v in self.widget_dict.items():
+            assert k in response.json and response.json[k] == v
 
     def retrieve_does_not_exist(self, client):
         response = login_user(client, login=LOGIN)
@@ -178,7 +196,9 @@ class TestWidget:
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
-        response = create(client, access_token, url=self.url_list)
+        response = create(
+            client, access_token, url=self.url_list, widget_dict=self.widget_dict
+        )
         assert response.status_code == HTTPStatus.CREATED
         widget_id = response.json["widget_id"]
         assert widget_id
@@ -188,7 +208,7 @@ class TestWidget:
             access_token,
             url=self.url,
             widget_id=widget_id,
-            name=UPDATED_DEFAULT_NAME,
+            widget_dict=self.widget_dict_updated,
         )
         assert response.status_code == HTTPStatus.OK
         assert "message" in response.json
@@ -196,13 +216,16 @@ class TestWidget:
         response = retrieve(client, access_token, url=self.url, widget_id=widget_id)
         assert response.status_code == HTTPStatus.OK
 
-        assert "name" in response.json and response.json["name"] == UPDATED_DEFAULT_NAME
+        for k, v in self.widget_dict_updated.items():
+            assert k in response.json and response.json[k] == v
 
     def update_not_admin(self, client):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
-        response = create(client, access_token, url=self.url_list)
+        response = create(
+            client, access_token, url=self.url_list, widget_dict=self.widget_dict
+        )
         assert response.status_code == HTTPStatus.CREATED
         assert "widget_id" in response.json
         widget_id = response.json["widget_id"]
@@ -216,7 +239,7 @@ class TestWidget:
             access_token_user,
             url=self.url,
             widget_id=widget_id,
-            name=UPDATED_DEFAULT_NAME,
+            widget_dict=self.widget_dict_updated,
         )
         assert response.status_code == HTTPStatus.FORBIDDEN
         assert "message" in response.json and response.json["message"] == FORBIDDEN
@@ -234,18 +257,20 @@ class TestWidget:
             access_token,
             url=self.url,
             widget_id=widget_id,
-            name=UPDATED_DEFAULT_NAME,
+            widget_dict=self.widget_dict_updated,
         )
         assert response.status_code == HTTPStatus.CREATED
         assert "status" in response.json and response.json["status"] == "success"
-        success = f"New {self.name} added: {UPDATED_DEFAULT_NAME}."
-        assert "message" in response.json and response.json["message"] == success
         assert "widget_id" in response.json
         widget_id = response.json["widget_id"]
+        success = f"New {self.name} added: {widget_id}."
+        assert "message" in response.json and response.json["message"] == success
+
         response = retrieve(client, access_token, url=self.url, widget_id=widget_id)
         assert response.status_code == HTTPStatus.OK
 
-        assert "name" in response.json and response.json["name"] == UPDATED_DEFAULT_NAME
+        for k, v in self.widget_dict_updated.items():
+            assert k in response.json and response.json[k] == v
 
     def retrieve_paginated_list(self, client, default_names=None):
         if default_names is None:
@@ -263,7 +288,7 @@ class TestWidget:
                 client,
                 access_token,
                 url=self.url_list,
-                name=NAMES[i],
+                widget_dict={"name": NAMES[i]},
             )
             assert response.status_code == HTTPStatus.CREATED
 

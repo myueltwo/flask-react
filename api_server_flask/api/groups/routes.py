@@ -47,7 +47,7 @@ class GroupList(Resource):
 @group_ns.response(int(HTTPStatus.NOT_FOUND), "Role not found.")
 @group_ns.response(int(HTTPStatus.UNAUTHORIZED), "Unauthorized.")
 @group_ns.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal server error.")
-class Role(Resource):
+class Group(Resource):
     """Handles HTTP requests to URL: /groups/{widget_id}."""
 
     @group_ns.response(int(HTTPStatus.OK), "Retrieved group.", widget_model)
