@@ -4,6 +4,9 @@ from api_server_flask.api.models.black_listed_token import BlacklistedToken
 from api_server_flask.api.models.role import Role
 from api_server_flask.api.models.group import Group
 from api_server_flask.api.models.subject import Subject
+from api_server_flask.api.models.type_grade import TypeGrade
+from api_server_flask.api.models.grade import Grade
+from api_server_flask.api.models.grade_users import GradeUsers
 import os
 import click
 from api_server_flask.api.models.util import create_id
@@ -21,6 +24,9 @@ def shell():
         "Role": Role,
         "Group": Group,
         "Subject": Subject,
+        "TypeGrade": TypeGrade,
+        "Grade": Grade,
+        "GradeUsers": GradeUsers,
     }
 
 

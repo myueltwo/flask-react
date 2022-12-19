@@ -3,7 +3,7 @@ from http import HTTPStatus
 
 from flask_restx import Namespace, Resource
 from api_server_flask.util.widget.dto import pagination_load_model
-from api_server_flask.api.subjects.dto import (
+from api_server_flask.api.widgets.subjects.dto import (
     SubjectSchema,
     PaginationSubjectSchema,
     subject_model,

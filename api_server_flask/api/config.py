@@ -39,14 +39,16 @@ def create_api_bp():
         security="Bearer",
     )
     from .auth.routes import auth_ns
-    from .roles.routes import role_ns
-    from .groups.routes import group_ns
-    from .subjects.routes import subject_ns
+    from api_server_flask.api.widgets.roles.routes import role_ns
+    from api_server_flask.api.widgets.groups.routes import group_ns
+    from api_server_flask.api.widgets.subjects.routes import subject_ns
+    from api_server_flask.api.widgets.type_grade.routes import type_grade_ns
 
     rest_api.add_namespace(auth_ns, path="/auth")
-    rest_api.add_namespace(role_ns, path="/roles")
-    rest_api.add_namespace(group_ns, path="/groups")
-    rest_api.add_namespace(subject_ns, path="/subjects")
+    rest_api.add_namespace(role_ns, path="/widgets/roles")
+    rest_api.add_namespace(group_ns, path="/widgets/groups")
+    rest_api.add_namespace(subject_ns, path="/widgets/subjects")
+    rest_api.add_namespace(type_grade_ns, path="/widgets/type_grades")
     return api_bp
 
 
