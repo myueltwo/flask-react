@@ -71,11 +71,13 @@ class TestWidget:
         self.url_list = url_list
         self.name = name
         if not widget_dict:
-            self.widget_dict = {"name": DEFAULT_NAME}
+            widget_dict = {"name": DEFAULT_NAME}
+        self.widget_dict = widget_dict
         if not widget_dict_updated:
-            self.widget_dict_updated = {
+            widget_dict_updated = {
                 "name": UPDATED_DEFAULT_NAME,
             }
+        self.widget_dict_updated = widget_dict_updated
 
     def __str__(self):
         """Informal string representation of a widget."""
@@ -83,14 +85,14 @@ class TestWidget:
 
     def __repr__(self):
         """Official string representation of a widget."""
-        return f"<Widget name={self.name} >"
+        return f"<Widget name={self.name}>"
 
-    def create_valid_name(self, client, widget_name):
+    def create_valid_name(self, client, widget_dict):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
         response = create(
-            client, access_token, url=self.url_list, widget_dict={"name": widget_name}
+            client, access_token, url=self.url_list, widget_dict=widget_dict
         )
         assert response.status_code == HTTPStatus.CREATED
         assert "widget_id" in response.json and response.json["widget_id"]

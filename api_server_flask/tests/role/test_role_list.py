@@ -13,7 +13,7 @@ widget = TestWidget(url="api.role", url_list="api.role_list", name="role")
 
 @pytest.mark.parametrize("name", ["abc123", "role-name", "new_role1"])
 def test_create_role_valid_name(client, db, admin, name):
-    widget.create_valid_name(client=client, widget_name=name)
+    widget.create_valid_name(client=client, widget_dict={"name": name})
 
 
 def test_create_role_no_admin_token(client, db, user):

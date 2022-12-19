@@ -78,7 +78,7 @@ class Widget:
         widget = self.Model.query.get_or_404(
             widget_id, description=f"{widget_id} not found in database."
         )
-        return WidgetSchema().dump(widget)
+        return self.schema().dump(widget)
 
     @admin_token_required
     def update_widget(self, widget_id, role_dict):

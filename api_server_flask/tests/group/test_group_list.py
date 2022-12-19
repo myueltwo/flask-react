@@ -8,7 +8,7 @@ widget = TestWidget(url="api.group", url_list="api.group_list", name="group")
 
 @pytest.mark.parametrize("name", ["abc123", "group-name", "new_group1"])
 def test_create_group_valid_name(client, db, admin, name):
-    widget.create_valid_name(client=client, widget_name=name)
+    widget.create_valid_name(client=client, widget_dict={"name": name})
 
 
 def test_create_group_no_admin_token(client, db, user):
