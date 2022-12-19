@@ -66,7 +66,15 @@ class TestWidget:
     # Prevent pytest from trying to collect webtest's TestWidget as tests:
     __test__ = False
 
-    def __init__(self, url, url_list, name, widget_dict=None, widget_dict_updated=None):
+    def __init__(
+        self,
+        url,
+        url_list,
+        name,
+        widget_dict=None,
+        widget_dict_updated=None,
+        widget_dict_list=None,
+    ):
         self.url = url
         self.url_list = url_list
         self.name = name
@@ -78,6 +86,11 @@ class TestWidget:
                 "name": UPDATED_DEFAULT_NAME,
             }
         self.widget_dict_updated = widget_dict_updated
+        if not widget_dict_list:
+            widget_dict_list = []
+            for i in NAMES:
+                widget_dict_list.append({"name": i})
+        self.widget_dict_list = widget_dict_list
 
     def __str__(self):
         """Informal string representation of a widget."""
@@ -285,17 +298,17 @@ class TestWidget:
         assert len(default_names) <= 3
 
         # ADD SIX ROLE INSTANCES TO DATABASE
-        for i in range(0, len(NAMES)):
+        for i in range(0, len(self.widget_dict_list)):
             response = create(
                 client,
                 access_token,
                 url=self.url_list,
-                widget_dict={"name": NAMES[i]},
+                widget_dict=self.widget_dict_list[i],
             )
             assert response.status_code == HTTPStatus.CREATED
 
         names_with_default = default_names.copy()
-        names_with_default.extend(NAMES)
+        names_with_default.extend(self.widget_dict_list)
         total_count_roles = len(names_with_default)
 
         # REQUEST PAGINATED LIST OF ROLES: 5 PER PAGE, PAGE #1
@@ -319,7 +332,8 @@ class TestWidget:
         # VERIFY ATTRIBUTES OF ROLES #1-5
         for i in range(0, len(response.json["items"])):
             item = response.json["items"][i]
-            assert "name" in item and item["name"] == names_with_default[i]
+            for k, v in names_with_default[i].items():
+                assert k in item and item[k] == v
 
         # REQUEST PAGINATED LIST OF WIDGETS: 5 PER PAGE, PAGE #2
         response = retrieve_list(
@@ -345,7 +359,8 @@ class TestWidget:
         # VERIFY ATTRIBUTES OF ROLES #6-9
         for i in range(5, response.json["total_items"]):
             item = response.json["items"][i - 5]
-            assert "name" in item and item["name"] == names_with_default[i]
+            for k, v in names_with_default[i].items():
+                assert k in item and item[k] == v
 
         # REQUEST PAGINATED LIST OF WIDGETS: 10 PER PAGE, PAGE #1
         response = retrieve_list(
@@ -372,7 +387,8 @@ class TestWidget:
         # VERIFY ATTRIBUTES OF ROLES #1-9
         for i in range(0, len(response.json["items"])):
             item = response.json["items"][i]
-            assert "name" in item and item["name"] == names_with_default[i]
+            for k, v in names_with_default[i].items():
+                assert k in item and item[k] == v
 
         # REQUEST PAGINATED LIST OF ROLES: DEFAULT PARAMETERS
         response = retrieve_list(client, access_token, url=self.url_list)
@@ -397,4 +413,5 @@ class TestWidget:
         # VERIFY ATTRIBUTES OF WIDGETS #1-9
         for i in range(0, len(response.json["items"])):
             item = response.json["items"][i]
-            assert "name" in item and item["name"] == names_with_default[i]
+            for k, v in names_with_default[i].items():
+                assert k in item and item[k] == v

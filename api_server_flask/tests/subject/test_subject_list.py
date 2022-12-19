@@ -1,7 +1,7 @@
 """Unit test for POST request sent to api.subject_list API endoint"""
 
 import pytest
-from api_server_flask.tests.widget.util import TestWidget, DEFAULT_NAME
+from api_server_flask.tests.widget.util import TestWidget, DEFAULT_NAME, NAMES
 
 
 widget = TestWidget(
@@ -9,6 +9,7 @@ widget = TestWidget(
     url_list="api.subject_list",
     name="subject",
     widget_dict={"name": DEFAULT_NAME, "count_hours": 5},
+    widget_dict_list=[{"name": v, "count_hours": i} for i, (v) in enumerate(NAMES)],
 )
 
 
@@ -25,5 +26,5 @@ def test_create_subject_no_admin_token(client, db, user):
     widget.create_no_admin_token(client=client)
 
 
-# def test_retrieve_paginated_subject_list(client, db, admin):
-#     widget.retrieve_paginated_list(client)
+def test_retrieve_paginated_subject_list(client, db, admin):
+    widget.retrieve_paginated_list(client)

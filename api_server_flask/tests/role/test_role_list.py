@@ -22,5 +22,10 @@ def test_create_role_no_admin_token(client, db, user):
 
 def test_retrieve_paginated_role_list(client, db, admin):
     widget.retrieve_paginated_list(
-        client, default_names=[STUDENT_ROLE_NAME, TUTOR_ROLE_NAME, ADMIN_ROLE_NAME]
+        client,
+        default_names=[
+            {"name": STUDENT_ROLE_NAME},
+            {"name": TUTOR_ROLE_NAME},
+            {"name": ADMIN_ROLE_NAME},
+        ],
     )
