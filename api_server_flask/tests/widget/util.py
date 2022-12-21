@@ -7,6 +7,7 @@ from api_server_flask.tests.util import (
     FORBIDDEN,
     login_user,
 )
+import pytest
 
 DEFAULT_NAME = "some name"
 UPDATED_DEFAULT_NAME = "update some name2"
@@ -60,37 +61,23 @@ def delete(test_client, access_token, url, widget_id):
     )
 
 
-class TestWidget:
+class Widget:
     """Class for test cases by simple widgets"""
 
     # Prevent pytest from trying to collect webtest's TestWidget as tests:
-    __test__ = False
+    # __test__ = False
 
-    def __init__(
-        self,
-        url,
-        url_list,
-        name,
-        widget_dict=None,
-        widget_dict_updated=None,
-        widget_dict_list=None,
-    ):
-        self.url = url
-        self.url_list = url_list
-        self.name = name
-        if not widget_dict:
-            widget_dict = {"name": DEFAULT_NAME}
-        self.widget_dict = widget_dict
-        if not widget_dict_updated:
-            widget_dict_updated = {
-                "name": UPDATED_DEFAULT_NAME,
-            }
-        self.widget_dict_updated = widget_dict_updated
-        if not widget_dict_list:
-            widget_dict_list = []
-            for i in NAMES:
-                widget_dict_list.append({"name": i})
-        self.widget_dict_list = widget_dict_list
+    url = None
+    url_list = None
+    name = None
+    widget_dict = {"name": DEFAULT_NAME}
+    widget_dict_updated = {
+        "name": UPDATED_DEFAULT_NAME,
+    }
+    widget_dict_list = []
+    for i in NAMES:
+        widget_dict_list.append({"name": i})
+    default_names = []
 
     def __str__(self):
         """Informal string representation of a widget."""
@@ -100,12 +87,16 @@ class TestWidget:
         """Official string representation of a widget."""
         return f"<Widget name={self.name}>"
 
-    def create_valid_name(self, client, widget_dict):
+    @pytest.mark.parametrize(
+        "widget_dict_create",
+        [{"name": "abc123"}, {"name": "widget-name"}, {"name": "new_widget1"}],
+    )
+    def test_create_valid_name(self, client, db, admin, widget_dict_create):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
         response = create(
-            client, access_token, url=self.url_list, widget_dict=widget_dict
+            client, access_token, url=self.url_list, widget_dict=widget_dict_create
         )
         assert response.status_code == HTTPStatus.CREATED
         assert "widget_id" in response.json and response.json["widget_id"]
@@ -119,7 +110,7 @@ class TestWidget:
             "Location" in response.headers and response.headers["Location"] == location
         )
 
-    def create_no_admin_token(self, client):
+    def test_create_no_admin_token(self, client, db, user):
         response = login_user(client, login=LOGIN)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
@@ -129,7 +120,7 @@ class TestWidget:
         assert response.status_code == HTTPStatus.FORBIDDEN
         assert "message" in response.json and response.json["message"] == FORBIDDEN
 
-    def delete(self, client):
+    def test_delete(self, client, db, admin):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
@@ -152,7 +143,7 @@ class TestWidget:
         response = delete(client, access_token, url=self.url, widget_id=widget_id)
         assert response.status_code == HTTPStatus.NOT_FOUND
 
-    def delete_no_admin_token(self, client):
+    def test_delete_no_admin_token(self, client, db, admin, user):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
@@ -171,7 +162,7 @@ class TestWidget:
         assert response.status_code == HTTPStatus.FORBIDDEN
         assert "message" in response.json and response.json["message"] == FORBIDDEN
 
-    def retrieve_non_admin_user(self, client):
+    def test_retrieve_non_admin_user(self, client, db, admin, user):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
@@ -191,7 +182,7 @@ class TestWidget:
         for k, v in self.widget_dict.items():
             assert k in response.json and response.json[k] == v
 
-    def retrieve_does_not_exist(self, client):
+    def test_retrieve_does_not_exist(self, client, db, user):
         response = login_user(client, login=LOGIN)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
@@ -207,7 +198,7 @@ class TestWidget:
             and f"{not_exist_role_id} not found in database" in response.json["message"]
         )
 
-    def update(self, client):
+    def test_update(self, client, db, admin):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
@@ -234,7 +225,7 @@ class TestWidget:
         for k, v in self.widget_dict_updated.items():
             assert k in response.json and response.json[k] == v
 
-    def update_not_admin(self, client):
+    def test_update_not_admin(self, client, db, admin, user):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
@@ -259,7 +250,7 @@ class TestWidget:
         assert response.status_code == HTTPStatus.FORBIDDEN
         assert "message" in response.json and response.json["message"] == FORBIDDEN
 
-    def update_not_exist(self, client):
+    def test_update_not_exist(self, client, db, admin):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
@@ -287,15 +278,13 @@ class TestWidget:
         for k, v in self.widget_dict_updated.items():
             assert k in response.json and response.json[k] == v
 
-    def retrieve_paginated_list(self, client, default_names=None):
-        if default_names is None:
-            default_names = []
+    def test_retrieve_paginated_list(self, client, db, admin):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
 
         # Maximum of default_names can be 3
-        assert len(default_names) <= 3
+        assert len(self.default_names) <= 3
 
         # ADD SIX ROLE INSTANCES TO DATABASE
         for i in range(0, len(self.widget_dict_list)):
@@ -307,7 +296,7 @@ class TestWidget:
             )
             assert response.status_code == HTTPStatus.CREATED
 
-        names_with_default = default_names.copy()
+        names_with_default = self.default_names.copy()
         names_with_default.extend(self.widget_dict_list)
         total_count_roles = len(names_with_default)
 
