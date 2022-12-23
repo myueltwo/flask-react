@@ -127,11 +127,16 @@ class Widget:
         return link_header.strip().strip(",")
 
 
-def add_models(ns: Namespace, model=widget_model, pagination=pagination_model):
+def add_models(
+        ns: Namespace, model=widget_model, pagination=pagination_model, rest_models=None
+):
     ns.models[model.name] = model
     ns.models[pagination_load_model.name] = pagination_load_model
     ns.models[pagination_links_model.name] = pagination_links_model
     ns.models[pagination.name] = pagination
+    if rest_models:
+        for i_model in rest_models:
+            ns.models[i_model.name] = i_model
 
 
 def create_widget_parser(widget: Widget):
