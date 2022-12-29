@@ -13,9 +13,18 @@ class TestWidget(Widget):
     url = "api.subject"
     url_list = "api.subject_list"
     name = "subject"
-    widget_dict = {"name": DEFAULT_NAME, "count_hours": 5}
-    widget_dict_list = [{"name": v, "count_hours": i} for i, (v) in enumerate(NAMES)]
-    widget_dict_updated = {"name": UPDATED_DEFAULT_NAME, "count_hours": 6}
+
+    @pytest.fixture
+    def widget_dict(self):
+        return {"name": DEFAULT_NAME, "count_hours": 5}
+
+    @pytest.fixture
+    def widget_dict_list(self):
+        return [{"name": v, "count_hours": i} for i, (v) in enumerate(NAMES)]
+
+    @pytest.fixture
+    def widget_dict_updated(self):
+        return {"name": UPDATED_DEFAULT_NAME, "count_hours": 6}
 
     @pytest.mark.parametrize(
         "widget_dict_create",

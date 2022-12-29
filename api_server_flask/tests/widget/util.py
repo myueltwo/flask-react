@@ -64,20 +64,27 @@ def delete(test_client, access_token, url, widget_id):
 class Widget:
     """Class for test cases by simple widgets"""
 
-    # Prevent pytest from trying to collect webtest's TestWidget as tests:
-    # __test__ = False
-
     url = None
     url_list = None
     name = None
-    widget_dict = {"name": DEFAULT_NAME}
-    widget_dict_updated = {
-        "name": UPDATED_DEFAULT_NAME,
-    }
-    widget_dict_list = []
-    for i in NAMES:
-        widget_dict_list.append({"name": i})
     default_names = []
+
+    @pytest.fixture
+    def widget_dict(self):
+        return {"name": DEFAULT_NAME}
+
+    @pytest.fixture
+    def widget_dict_updated(self):
+        return {
+            "name": UPDATED_DEFAULT_NAME,
+        }
+
+    @pytest.fixture
+    def widget_dict_list(self):
+        dict_list = []
+        for i in NAMES:
+            dict_list.append({"name": i})
+        return dict_list
 
     def __str__(self):
         """Informal string representation of a widget."""
@@ -110,22 +117,22 @@ class Widget:
             "Location" in response.headers and response.headers["Location"] == location
         )
 
-    def test_create_no_admin_token(self, client, db, user):
+    def test_create_no_admin_token(self, client, db, user, widget_dict):
         response = login_user(client, login=LOGIN)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
         response = create(
-            client, access_token, url=self.url_list, widget_dict=self.widget_dict
+            client, access_token, url=self.url_list, widget_dict=widget_dict
         )
         assert response.status_code == HTTPStatus.FORBIDDEN
         assert "message" in response.json and response.json["message"] == FORBIDDEN
 
-    def test_delete(self, client, db, admin):
+    def test_delete(self, client, db, admin, widget_dict):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
         response = create(
-            client, access_token, url=self.url_list, widget_dict=self.widget_dict
+            client, access_token, url=self.url_list, widget_dict=widget_dict
         )
         assert response.status_code == HTTPStatus.CREATED
         assert "widget_id" in response.json
@@ -143,12 +150,12 @@ class Widget:
         response = delete(client, access_token, url=self.url, widget_id=widget_id)
         assert response.status_code == HTTPStatus.NOT_FOUND
 
-    def test_delete_no_admin_token(self, client, db, admin, user):
+    def test_delete_no_admin_token(self, client, db, admin, user, widget_dict):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
         response = create(
-            client, access_token, url=self.url_list, widget_dict=self.widget_dict
+            client, access_token, url=self.url_list, widget_dict=widget_dict
         )
         assert response.status_code == HTTPStatus.CREATED
         assert "widget_id" in response.json
@@ -162,12 +169,12 @@ class Widget:
         assert response.status_code == HTTPStatus.FORBIDDEN
         assert "message" in response.json and response.json["message"] == FORBIDDEN
 
-    def test_retrieve_non_admin_user(self, client, db, admin, user):
+    def test_retrieve_non_admin_user(self, client, db, admin, user, widget_dict):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
         response = create(
-            client, access_token, url=self.url_list, widget_dict=self.widget_dict
+            client, access_token, url=self.url_list, widget_dict=widget_dict
         )
         assert response.status_code == HTTPStatus.CREATED
         widget_id = response.json["widget_id"]
@@ -179,7 +186,7 @@ class Widget:
         response = retrieve(client, access_token, url=self.url, widget_id=widget_id)
         assert response.status_code == HTTPStatus.OK
 
-        for k, v in self.widget_dict.items():
+        for k, v in widget_dict.items():
             assert k in response.json and response.json[k] == v
 
     def test_retrieve_does_not_exist(self, client, db, user):
@@ -198,12 +205,12 @@ class Widget:
             and f"{not_exist_role_id} not found in database" in response.json["message"]
         )
 
-    def test_update(self, client, db, admin):
+    def test_update(self, client, db, admin, widget_dict, widget_dict_updated):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
         response = create(
-            client, access_token, url=self.url_list, widget_dict=self.widget_dict
+            client, access_token, url=self.url_list, widget_dict=widget_dict
         )
         assert response.status_code == HTTPStatus.CREATED
         widget_id = response.json["widget_id"]
@@ -214,7 +221,7 @@ class Widget:
             access_token,
             url=self.url,
             widget_id=widget_id,
-            widget_dict=self.widget_dict_updated,
+            widget_dict=widget_dict_updated,
         )
         assert response.status_code == HTTPStatus.OK
         assert "message" in response.json
@@ -222,15 +229,17 @@ class Widget:
         response = retrieve(client, access_token, url=self.url, widget_id=widget_id)
         assert response.status_code == HTTPStatus.OK
 
-        for k, v in self.widget_dict_updated.items():
+        for k, v in widget_dict_updated.items():
             assert k in response.json and response.json[k] == v
 
-    def test_update_not_admin(self, client, db, admin, user):
+    def test_update_not_admin(
+        self, client, db, admin, user, widget_dict, widget_dict_updated
+    ):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
         response = create(
-            client, access_token, url=self.url_list, widget_dict=self.widget_dict
+            client, access_token, url=self.url_list, widget_dict=widget_dict
         )
         assert response.status_code == HTTPStatus.CREATED
         assert "widget_id" in response.json
@@ -245,12 +254,12 @@ class Widget:
             access_token_user,
             url=self.url,
             widget_id=widget_id,
-            widget_dict=self.widget_dict_updated,
+            widget_dict=widget_dict_updated,
         )
         assert response.status_code == HTTPStatus.FORBIDDEN
         assert "message" in response.json and response.json["message"] == FORBIDDEN
 
-    def test_update_not_exist(self, client, db, admin):
+    def test_update_not_exist(self, client, db, admin, widget_dict_updated):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
@@ -263,7 +272,7 @@ class Widget:
             access_token,
             url=self.url,
             widget_id=widget_id,
-            widget_dict=self.widget_dict_updated,
+            widget_dict=widget_dict_updated,
         )
         assert response.status_code == HTTPStatus.CREATED
         assert "status" in response.json and response.json["status"] == "success"
@@ -275,10 +284,10 @@ class Widget:
         response = retrieve(client, access_token, url=self.url, widget_id=widget_id)
         assert response.status_code == HTTPStatus.OK
 
-        for k, v in self.widget_dict_updated.items():
+        for k, v in widget_dict_updated.items():
             assert k in response.json and response.json[k] == v
 
-    def test_retrieve_paginated_list(self, client, db, admin):
+    def test_retrieve_paginated_list(self, client, db, admin, widget_dict_list):
         response = login_user(client, login=ADMIN_LOGIN, password=ADMIN_PASSWORD)
         assert "access_token" in response.json
         access_token = response.json["access_token"]
@@ -287,17 +296,17 @@ class Widget:
         assert len(self.default_names) <= 3
 
         # ADD SIX ROLE INSTANCES TO DATABASE
-        for i in range(0, len(self.widget_dict_list)):
+        for i in range(0, len(widget_dict_list)):
             response = create(
                 client,
                 access_token,
                 url=self.url_list,
-                widget_dict=self.widget_dict_list[i],
+                widget_dict=widget_dict_list[i],
             )
             assert response.status_code == HTTPStatus.CREATED
 
         names_with_default = self.default_names.copy()
-        names_with_default.extend(self.widget_dict_list)
+        names_with_default.extend(widget_dict_list)
         total_count_roles = len(names_with_default)
 
         # REQUEST PAGINATED LIST OF ROLES: 5 PER PAGE, PAGE #1

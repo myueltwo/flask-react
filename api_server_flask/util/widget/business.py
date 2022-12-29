@@ -128,7 +128,7 @@ class Widget:
 
 
 def add_models(
-        ns: Namespace, model=widget_model, pagination=pagination_model, rest_models=None
+    ns: Namespace, model=widget_model, pagination=pagination_model, rest_models=None
 ):
     ns.models[model.name] = model
     ns.models[pagination_load_model.name] = pagination_load_model

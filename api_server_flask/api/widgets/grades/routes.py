@@ -25,7 +25,7 @@ add_models(
     grade_ns,
     model=grade_model,
     pagination=pagination_grade_model,
-    rest_models=[grade_type_model, grade_subject_model]
+    rest_models=[grade_type_model, grade_subject_model],
 )
 widget = Widget(
     model=Grade,
@@ -50,9 +50,7 @@ class GradeList(Resource):
         """Create a widget"""
         return create_widget_parser(widget)
 
-    @grade_ns.response(
-        HTTPStatus.OK, "Retrieved subject list.", pagination_grade_model
-    )
+    @grade_ns.response(HTTPStatus.OK, "Retrieved subject list.", pagination_grade_model)
     @grade_ns.expect(pagination_load_model)
     def get(self):
         """Get list of widgets"""

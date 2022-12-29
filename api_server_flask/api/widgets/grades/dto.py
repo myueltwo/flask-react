@@ -16,9 +16,9 @@ class GradeTypeSchema(Schema):
 
 
 class GradeSchema(Schema):
-    subject_id = fields.Str(required=True, load_only=True)
+    subject_id = fields.Str(required=True)
     subject = fields.Nested(GradeSubjectSchema, dump_only=True)
-    type_id = fields.Str(required=True, load_only=True)
+    type_id = fields.Str(required=True)
     type = fields.Nested(GradeTypeSchema, dump_only=True)
 
 
@@ -32,4 +32,3 @@ grade_model = get_model_from_schema(GradeSchema, "GradeSchema")
 pagination_grade_model = get_model_from_schema(
     PaginationGradeSchema, "PaginationGradeSchema"
 )
-
