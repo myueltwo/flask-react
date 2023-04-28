@@ -45,6 +45,9 @@ def create_api_bp():
     from api_server_flask.api.widgets.type_grade.routes import type_grade_ns
     from api_server_flask.api.widgets.grades.routes import grade_ns
     from api_server_flask.api.widgets.grade_users.routes import grade_users_ns
+    from api_server_flask.api.widgets.attendance_type.routes import attendance_type_ns
+    from api_server_flask.api.widgets.attendance.routes import attendance_ns
+    from api_server_flask.api.widgets.attendance_grade.routes import attendance_grade_ns
 
     rest_api.add_namespace(auth_ns, path="/auth")
     rest_api.add_namespace(role_ns, path="/widgets/roles")
@@ -53,6 +56,9 @@ def create_api_bp():
     rest_api.add_namespace(type_grade_ns, path="/widgets/type_grades")
     rest_api.add_namespace(grade_ns, path="/widgets/grades")
     rest_api.add_namespace(grade_users_ns, path="/widgets/grade_users")
+    rest_api.add_namespace(attendance_type_ns, path="/widgets/attendance_type")
+    rest_api.add_namespace(attendance_ns, path="/widgets/attendance")
+    rest_api.add_namespace(attendance_grade_ns, path="/widgets/attendance_grade")
     return api_bp
 
 
