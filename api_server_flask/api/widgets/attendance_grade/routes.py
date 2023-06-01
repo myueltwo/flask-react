@@ -23,7 +23,6 @@ add_models(
     attendance_grade_ns,
     model=attendance_grade_model,
     pagination=pagination_attendance_grade_model,
-    # rest_models=[grade_type_model, grade_subject_model],
 )
 widget = Widget(
     model=AttendanceGrade,

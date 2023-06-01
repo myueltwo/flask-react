@@ -37,26 +37,6 @@ widget = Widget(
 )
 
 
-@attendance_ns.route("", endpoint="attendance_list")
-@attendance_ns.doc(body=attendance_type_model)
-class GradeList(Resource):
-    """Handles HTTP requests to URL: /api/v1/attendance."""
-
-    @attendance_ns.response(int(HTTPStatus.CREATED), "Added new attendance.")
-    @attendance_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
-    @attendance_ns.expect(attendance_model)
-    @attendance_ns.doc(body=attendance_group_model)
-    def post(self):
-        """Create a widget"""
-        return create_widget_parser(widget)
-
-    @attendance_ns.response(HTTPStatus.OK, "Retrieved attendance list.", pagination_attendance_model)
-    @attendance_ns.expect(pagination_load_model)
-    def get(self):
-        """Get list of widgets"""
-        return retrieve_widget_list_parser(widget)
-
-
 @attendance_ns.route("/<widget_id>", endpoint="attendance")
 @attendance_ns.param("widget_id", "Attendance id")
 @attendance_ns.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
@@ -64,7 +44,7 @@ class GradeList(Resource):
 @attendance_ns.response(int(HTTPStatus.UNAUTHORIZED), "Unauthorized.")
 @attendance_ns.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal server error.")
 @attendance_ns.doc(body=attendance_group_model)
-class Grade(Resource):
+class Attendance(Resource):
     """Handles HTTP requests to URL: /attendance/{widget_id}."""
 
     @attendance_ns.response(int(HTTPStatus.OK), "Retrieved subject.", attendance_model)
@@ -85,3 +65,23 @@ class Grade(Resource):
     def delete(self, widget_id):
         """Delete a widget."""
         return widget.delete_widget(widget_id)
+
+
+@attendance_ns.route("", endpoint="attendance_list")
+@attendance_ns.doc(body=attendance_type_model)
+class AttendanceList(Resource):
+    """Handles HTTP requests to URL: /api/v1/attendance."""
+
+    @attendance_ns.response(int(HTTPStatus.CREATED), "Added new attendance.")
+    @attendance_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
+    @attendance_ns.expect(attendance_model)
+    @attendance_ns.doc(body=attendance_group_model)
+    def post(self):
+        """Create a widget"""
+        return create_widget_parser(widget)
+
+    @attendance_ns.response(HTTPStatus.OK, "Retrieved attendance list.", pagination_attendance_model)
+    @attendance_ns.expect(pagination_load_model)
+    def get(self):
+        """Get list of widgets"""
+        return retrieve_widget_list_parser(widget)

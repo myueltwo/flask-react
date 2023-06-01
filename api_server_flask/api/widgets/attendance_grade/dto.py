@@ -21,5 +21,5 @@ class PaginationAttendanceGradeSchema(PaginationSchema):
 
 attendance_grade_model = get_model_from_schema(AttendanceGradeSchema, "AttendanceGradeSchema")
 pagination_attendance_grade_model = get_model_from_schema(
-    AttendanceGradeSchema, "PaginationAttendanceSchema"
+    PaginationAttendanceGradeSchema, "PaginationAttendanceGradeSchema"
 )

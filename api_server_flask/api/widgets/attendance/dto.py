@@ -23,7 +23,7 @@ class AttendanceSchema(Schema):
     type = fields.Nested(AttendanceTypeSchema, dump_only=True)
     group_id = fields.Str(required=True)
     group = fields.Nested(GroupSchema, dump_only=True)
-    date = fields.Date(required=False)
+    date = fields.DateTime(required=False)
 
 
 class PaginationAttendanceSchema(PaginationSchema):
@@ -34,5 +34,5 @@ attendance_group_model = get_model_from_schema(GroupSchema, "GroupSchema")
 attendance_type_model = get_model_from_schema(AttendanceTypeSchema, "AttendanceTypeSchema")
 attendance_model = get_model_from_schema(AttendanceSchema, "AttendanceSchema")
 pagination_attendance_model = get_model_from_schema(
-    AttendanceSchema, "PaginationAttendanceSchema"
+    PaginationAttendanceSchema, "PaginationAttendanceSchema"
 )
