@@ -33,7 +33,7 @@ def add_context(db, type_attendance, user, subjects_names):
             group_id=group.id,
             type_id=type_attendance[0].id if i < 2 else type_attendance[1].id
         )
-        for i, (v) in enumerate(subjects_names)
+        for i, (v) in enumerate(subjects)
     ]
     db.session.add_all(attendance)
     db.session.commit()
@@ -59,11 +59,11 @@ class TestWidget(Widget):
 
     @pytest.fixture
     def widget_dict(self, db, type_attendance, user):
-        return add_context(db, type_attendance, user, subjects_names=DEFAULT_NAME)
+        return add_context(db, type_attendance, user, subjects_names=[DEFAULT_NAME])[0]
 
     @pytest.fixture
     def widget_dict_updated(self, db, type_attendance, user):
-        data = add_context(db, type_attendance, user, subjects_names=DEFAULT_NAME)
+        data = add_context(db, type_attendance, user, subjects_names=[DEFAULT_NAME])[0]
         data["active"] = 2
         return data
 
