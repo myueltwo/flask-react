@@ -31,7 +31,7 @@ def add_context(db, type_attendance, user, subjects_names):
         Attendance(
             subject_id=v.id,
             group_id=group.id,
-            type_id=type_attendance[0].id if i < 2 else type_attendance[1].id
+            type_id=type_attendance[0].id if i < 2 else type_attendance[1].id,
         )
         for i, (v) in enumerate(subjects)
     ]
@@ -73,7 +73,9 @@ class TestWidget(Widget):
 
     @pytest.fixture
     def widget_dict_create(self, db, type_attendance, user):
-        return add_context(db, type_attendance, user, ["first subject", "second subj", "test_subj"])
+        return add_context(
+            db, type_attendance, user, ["first subject", "second subj", "test_subj"]
+        )
 
     def test_create_valid_name(self, client, db, admin, widget_dict_create):
         for i in widget_dict_create:

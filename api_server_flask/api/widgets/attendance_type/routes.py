@@ -33,7 +33,9 @@ class AttendanceTypeList(Resource):
     """Handles HTTP requests to URL: /api/v1/widgets/attendance_type."""
 
     @attendance_type_ns.response(int(HTTPStatus.CREATED), "Added new type's attendance.")
-    @attendance_type_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
+    @attendance_type_ns.response(
+        int(HTTPStatus.FORBIDDEN), "Administrator token required."
+    )
     @attendance_type_ns.expect(widget_model)
     def post(self):
         """Create a type's attendance"""
@@ -53,11 +55,15 @@ class AttendanceTypeList(Resource):
 @attendance_type_ns.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
 @attendance_type_ns.response(int(HTTPStatus.NOT_FOUND), "Type's attendance not found.")
 @attendance_type_ns.response(int(HTTPStatus.UNAUTHORIZED), "Unauthorized.")
-@attendance_type_ns.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal server error.")
+@attendance_type_ns.response(
+    int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal server error."
+)
 class AttendanceType(Resource):
     """Handles HTTP requests to URL: /attendance_type/{widget_id}."""
 
-    @attendance_type_ns.response(int(HTTPStatus.OK), "Retrieved type's attendance.", widget_model)
+    @attendance_type_ns.response(
+        int(HTTPStatus.OK), "Retrieved type's attendance.", widget_model
+    )
     def get(self, widget_id):
         """Retrieve a type's attendance."""
         return widget.retrieve_widget(widget_id)
@@ -66,14 +72,20 @@ class AttendanceType(Resource):
         int(HTTPStatus.OK), "Type's attendance was updated.", widget_model
     )
     @attendance_type_ns.response(int(HTTPStatus.CREATED), "Added new type's attendance.")
-    @attendance_type_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
+    @attendance_type_ns.response(
+        int(HTTPStatus.FORBIDDEN), "Administrator token required."
+    )
     @attendance_type_ns.expect(widget_model, validate=False)
     def put(self, widget_id):
         """Update a widget."""
         return update_widget_parser(widget, widget_id)
 
-    @attendance_type_ns.response(int(HTTPStatus.NO_CONTENT), "Type's attendance was deleted.")
-    @attendance_type_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
+    @attendance_type_ns.response(
+        int(HTTPStatus.NO_CONTENT), "Type's attendance was deleted."
+    )
+    @attendance_type_ns.response(
+        int(HTTPStatus.FORBIDDEN), "Administrator token required."
+    )
     def delete(self, widget_id):
         """Delete a widget."""
         return widget.delete_widget(widget_id)

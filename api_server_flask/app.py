@@ -10,6 +10,8 @@ from api_server_flask.api.models.grade_users import GradeUsers
 from api_server_flask.api.models.attendance_grade import AttendanceGrade
 from api_server_flask.api.models.attendance import Attendance
 from api_server_flask.api.models.attendance_type import AttendanceType
+from api_server_flask.api.models.labs_grade import LabsGrade
+from api_server_flask.api.models.lab import Lab
 import os
 import click
 from api_server_flask.api.models.util import create_id
@@ -32,7 +34,9 @@ def shell():
         "GradeUsers": GradeUsers,
         "AttendanceType": AttendanceType,
         "Attendance": Attendance,
-        "AttendanceGrade": AttendanceGrade
+        "AttendanceGrade": AttendanceGrade,
+        "Lab": Lab,
+        "LabsGrade": LabsGrade,
     }
 
 

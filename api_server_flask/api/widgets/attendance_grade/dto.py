@@ -19,7 +19,9 @@ class PaginationAttendanceGradeSchema(PaginationSchema):
     items = fields.List(fields.Nested(AttendanceGradeSchema))
 
 
-attendance_grade_model = get_model_from_schema(AttendanceGradeSchema, "AttendanceGradeSchema")
+attendance_grade_model = get_model_from_schema(
+    AttendanceGradeSchema, "AttendanceGradeSchema"
+)
 pagination_attendance_grade_model = get_model_from_schema(
     PaginationAttendanceGradeSchema, "PaginationAttendanceGradeSchema"
 )

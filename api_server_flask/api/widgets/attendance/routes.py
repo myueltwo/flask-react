@@ -52,7 +52,9 @@ class Attendance(Resource):
         """Retrieve a widget."""
         return widget.retrieve_widget(widget_id)
 
-    @attendance_ns.response(int(HTTPStatus.OK), "Attendance was updated.", attendance_model)
+    @attendance_ns.response(
+        int(HTTPStatus.OK), "Attendance was updated.", attendance_model
+    )
     @attendance_ns.response(int(HTTPStatus.CREATED), "Added new attendance.")
     @attendance_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
     @attendance_ns.expect(attendance_model)
@@ -80,7 +82,9 @@ class AttendanceList(Resource):
         """Create a widget"""
         return create_widget_parser(widget)
 
-    @attendance_ns.response(HTTPStatus.OK, "Retrieved attendance list.", pagination_attendance_model)
+    @attendance_ns.response(
+        HTTPStatus.OK, "Retrieved attendance list.", pagination_attendance_model
+    )
     @attendance_ns.expect(pagination_load_model)
     def get(self):
         """Get list of widgets"""

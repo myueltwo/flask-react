@@ -31,7 +31,9 @@ class PaginationAttendanceSchema(PaginationSchema):
 
 
 attendance_group_model = get_model_from_schema(GroupSchema, "GroupSchema")
-attendance_type_model = get_model_from_schema(AttendanceTypeSchema, "AttendanceTypeSchema")
+attendance_type_model = get_model_from_schema(
+    AttendanceTypeSchema, "AttendanceTypeSchema"
+)
 attendance_model = get_model_from_schema(AttendanceSchema, "AttendanceSchema")
 pagination_attendance_model = get_model_from_schema(
     PaginationAttendanceSchema, "PaginationAttendanceSchema"

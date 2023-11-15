@@ -11,7 +11,6 @@ from datetime import datetime
 from api_server_flask.api.models.attendance_type import AttendanceType
 from api_server_flask.api.models.group import Group
 from api_server_flask.api.models.subject import Subject
-from api_server_flask.util. datetime_util import utc_now
 
 
 def add_context(db, type_attendance, group_name, subjects_names):
@@ -29,7 +28,11 @@ def add_context(db, type_attendance, group_name, subjects_names):
     db.session.add(group)
     db.session.commit()
     return [
-        {"subject_id": v.id, "group_id": group.id, "type_id": type_attendance[0].id if i < 2 else type_attendance[1].id}
+        {
+            "subject_id": v.id,
+            "group_id": group.id,
+            "type_id": type_attendance[0].id if i < 2 else type_attendance[1].id,
+        }
         for i, (v) in enumerate(subjects)
     ]
 
@@ -50,11 +53,15 @@ class TestWidget(Widget):
 
     @pytest.fixture
     def widget_dict(self, db, type_attendance):
-        return add_context(db, type_attendance, group_name="424", subjects_names=DEFAULT_NAME)[0]
+        return add_context(
+            db, type_attendance, group_name="424", subjects_names=DEFAULT_NAME
+        )[0]
 
     @pytest.fixture
     def widget_dict_updated(self, db, type_attendance):
-        data = add_context(db, type_attendance, group_name="424", subjects_names=DEFAULT_NAME)[0]
+        data = add_context(
+            db, type_attendance, group_name="424", subjects_names=DEFAULT_NAME
+        )[0]
         data["date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
         return data
 
