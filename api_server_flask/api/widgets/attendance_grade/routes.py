@@ -9,6 +9,8 @@ from api_server_flask.api.widgets.attendance_grade.dto import (
     attendance_grade_model,
     pagination_attendance_grade_model,
 )
+from api_server_flask.api.widgets.attendance.dto import attendance_model
+from api_server_flask.api.auth.dto import user_model
 from api_server_flask.util.widget.business import (
     Widget,
     add_models,
@@ -25,6 +27,7 @@ add_models(
     attendance_grade_ns,
     model=attendance_grade_model,
     pagination=pagination_attendance_grade_model,
+    rest_models=[attendance_model, user_model],
 )
 widget = Widget(
     model=AttendanceGrade,

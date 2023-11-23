@@ -33,6 +33,10 @@
     set FLASK_ENV=development
     py -m flask run
 ```
+## routes
+```
+    flask routes
+```
 ## tests
 ```
     tox -- tests/widget/test_attendance_type.py::TestWidget
