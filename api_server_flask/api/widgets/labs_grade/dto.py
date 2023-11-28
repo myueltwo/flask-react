@@ -19,7 +19,7 @@ class PaginationLabGradeSchema(PaginationSchema):
     items = fields.List(fields.Nested(LabGradeSchema))
 
 
-lab_grade_model = get_model_from_schema(LabSchema, "LabGradeSchema")
+lab_grade_model = get_model_from_schema(LabGradeSchema, "LabGradeSchema")
 pagination_lab_grade_model = get_model_from_schema(
     PaginationLabGradeSchema, "PaginationLabGradeSchema"
 )
