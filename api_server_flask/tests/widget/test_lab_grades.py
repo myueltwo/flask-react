@@ -34,7 +34,11 @@ def add_context(db, user, subjects_names):
     db.session.add_all(labs)
     db.session.commit()
     return [
-        {"lab_id": v.id, "user_id": user.id, "date": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")}
+        {
+            "lab_id": v.id,
+            "user_id": user.id,
+            "date": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
+        }
         for i, (v) in enumerate(labs)
     ]
 
@@ -60,9 +64,7 @@ class TestWidget(Widget):
 
     @pytest.fixture
     def widget_dict_create(self, db, user):
-        return add_context(
-            db, user, ["first subject", "second subj", "test_subj"]
-        )
+        return add_context(db, user, ["first subject", "second subj", "test_subj"])
 
     def test_create_valid_name(self, client, db, admin, widget_dict_create):
         for i in widget_dict_create:

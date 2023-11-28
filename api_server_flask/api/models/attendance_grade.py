@@ -17,4 +17,7 @@ class AttendanceGrade(Base):
     active = db.Column(db.Integer, default=0)
 
     def __repr__(self):
-        return f"<AttendanceGrade user={self.user.surname} active={self.active} attendance={self.attendance_id}>"
+        return (
+            f"<AttendanceGrade user={self.user.surname} active={self.active} "
+            f"attendance={self.attendance_id}>"
+        )

@@ -50,7 +50,9 @@ def create_api_bp():
     from api_server_flask.api.widgets.attendance_grade.routes import attendance_grade_ns
     from api_server_flask.api.widgets.labs.routes import lab_ns
     from api_server_flask.api.widgets.labs_grade.routes import labs_grade_ns
-    from api_server_flask.api.widgets.activity_sub_type.routes import activity_sub_type_ns
+    from api_server_flask.api.widgets.activity_sub_type.routes import (
+        activity_sub_type_ns,
+    )
     from api_server_flask.api.widgets.activity_type.routes import activity_type_ns
     from api_server_flask.api.widgets.rate_activity.routes import rate_activity_ns
     from api_server_flask.api.widgets.activity.routes import activity_ns

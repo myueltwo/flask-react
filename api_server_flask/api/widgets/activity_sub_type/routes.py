@@ -32,7 +32,9 @@ widget = Widget(
 class ActivitySubTypeList(Resource):
     """Handles HTTP requests to URL: /api/v1/widgets/activity_sub_type."""
 
-    @activity_sub_type_ns.response(int(HTTPStatus.CREATED), "Added new subtype's activity.")
+    @activity_sub_type_ns.response(
+        int(HTTPStatus.CREATED), "Added new subtype's activity."
+    )
     @activity_sub_type_ns.response(
         int(HTTPStatus.FORBIDDEN), "Administrator token required."
     )
@@ -53,7 +55,9 @@ class ActivitySubTypeList(Resource):
 @activity_sub_type_ns.route("/<widget_id>", endpoint="activity_sub_type")
 @activity_sub_type_ns.param("widget_id", "Subtype's activity id")
 @activity_sub_type_ns.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
-@activity_sub_type_ns.response(int(HTTPStatus.NOT_FOUND), "Subtype's activity not found.")
+@activity_sub_type_ns.response(
+    int(HTTPStatus.NOT_FOUND), "Subtype's activity not found."
+)
 @activity_sub_type_ns.response(int(HTTPStatus.UNAUTHORIZED), "Unauthorized.")
 @activity_sub_type_ns.response(
     int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal server error."
@@ -71,7 +75,9 @@ class ActivitySubType(Resource):
     @activity_sub_type_ns.response(
         int(HTTPStatus.OK), "Subtype's activity was updated.", widget_model
     )
-    @activity_sub_type_ns.response(int(HTTPStatus.CREATED), "Added new subtype's activity.")
+    @activity_sub_type_ns.response(
+        int(HTTPStatus.CREATED), "Added new subtype's activity."
+    )
     @activity_sub_type_ns.response(
         int(HTTPStatus.FORBIDDEN), "Administrator token required."
     )

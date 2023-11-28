@@ -10,4 +10,7 @@ class Lab(Base):
     deadline = db.Column(db.DateTime, nullable=False)
 
     def __repr__(self):
-        return f"<Lab name={self.name} subject_id={self.subject_id} deadline={self.deadline}>"
+        return (
+            f"<Lab name={self.name} subject_id={self.subject_id} "
+            f"deadline={self.deadline}>"
+        )

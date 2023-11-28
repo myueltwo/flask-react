@@ -20,9 +20,7 @@ from api_server_flask.util.widget.business import (
 )
 from api_server_flask.api.models.activity import Activity
 
-activity_ns = Namespace(
-    name="activity", description="Store of activity by users"
-)
+activity_ns = Namespace(name="activity", description="Store of activity by users")
 add_models(
     activity_ns,
     model=activity_model,
@@ -43,12 +41,8 @@ widget = Widget(
 class ActivityList(Resource):
     """Handles HTTP requests to URL: /api/v1/activity."""
 
-    @activity_ns.response(
-        int(HTTPStatus.CREATED), "Added new activity by user."
-    )
-    @activity_ns.response(
-        int(HTTPStatus.FORBIDDEN), "Administrator token required."
-    )
+    @activity_ns.response(int(HTTPStatus.CREATED), "Added new activity by user.")
+    @activity_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
     @activity_ns.expect(rate_activity_model)
     def post(self):
         """Create a widget"""
@@ -66,39 +60,27 @@ class ActivityList(Resource):
 @activity_ns.route("/<widget_id>", endpoint="activity")
 @activity_ns.param("widget_id", "Activity of user")
 @activity_ns.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
-@activity_ns.response(
-    int(HTTPStatus.NOT_FOUND), "Activity by user not found."
-)
+@activity_ns.response(int(HTTPStatus.NOT_FOUND), "Activity by user not found.")
 @activity_ns.response(int(HTTPStatus.UNAUTHORIZED), "Unauthorized.")
-@activity_ns.response(
-    int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal server error."
-)
+@activity_ns.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal server error.")
 class Activity(Resource):
     """Handles HTTP requests to URL: /activity/{widget_id}."""
 
-    @activity_ns.response(
-        int(HTTPStatus.OK), "Retrieved activity.", activity_model
-    )
+    @activity_ns.response(int(HTTPStatus.OK), "Retrieved activity.", activity_model)
     def get(self, widget_id):
         """Retrieve a widget."""
         return widget.retrieve_widget(widget_id)
 
-    @activity_ns.response(
-        int(HTTPStatus.OK), "Widget was updated.", activity_model
-    )
+    @activity_ns.response(int(HTTPStatus.OK), "Widget was updated.", activity_model)
     @activity_ns.response(int(HTTPStatus.CREATED), "Added new widget.")
-    @activity_ns.response(
-        int(HTTPStatus.FORBIDDEN), "Administrator token required."
-    )
+    @activity_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
     @activity_ns.expect(activity_model)
     def put(self, widget_id):
         """Update a widget."""
         return update_widget_parser(widget, widget_id)
 
     @activity_ns.response(int(HTTPStatus.NO_CONTENT), "Widget was deleted.")
-    @activity_ns.response(
-        int(HTTPStatus.FORBIDDEN), "Administrator token required."
-    )
+    @activity_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
     def delete(self, widget_id):
         """Delete a widget."""
         return widget.delete_widget(widget_id)

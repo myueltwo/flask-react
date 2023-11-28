@@ -1,6 +1,4 @@
-from api_server_flask.util.widget.dto import (
-    PaginationSchema, WidgetSchema
-)
+from api_server_flask.util.widget.dto import PaginationSchema, WidgetSchema
 from api_server_flask.util.covert_model import get_model_from_schema
 from api_server_flask.api.auth.dto import UserSchema
 from api_server_flask.api.widgets.rate_activity.dto import RateActivitySchema

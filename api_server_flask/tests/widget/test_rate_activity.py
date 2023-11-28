@@ -7,7 +7,6 @@ from api_server_flask.tests.widget.util import (
     DEFAULT_NAME,
     NAMES,
 )
-from api_server_flask.api.models.rate_activity import RateActivity
 from api_server_flask.api.models.activity_type import ActivityType
 from api_server_flask.api.models.activity_sub_type import ActivitySubType
 
@@ -26,7 +25,11 @@ def add_context(db, types_names):
     db.session.add(subtype)
     db.session.commit()
     return [
-        {"activity_type_id": v.id, "activity_sub_type_id": subtype.id, "value": 1 if i < 2 else 2}
+        {
+            "activity_type_id": v.id,
+            "activity_sub_type_id": subtype.id,
+            "value": 1 if i < 2 else 2,
+        }
         for i, (v) in enumerate(types)
     ]
 
@@ -52,9 +55,7 @@ class TestWidget(Widget):
 
     @pytest.fixture
     def widget_dict_create(self, db):
-        return add_context(
-            db, ["first subject", "second subj", "test_subj"]
-        )
+        return add_context(db, ["first subject", "second subj", "test_subj"])
 
     def test_create_valid_name(self, client, db, admin, widget_dict_create):
         for i in widget_dict_create:

@@ -1,6 +1,4 @@
-from api_server_flask.util.widget.dto import (
-    PaginationSchema, WidgetSchema
-)
+from api_server_flask.util.widget.dto import PaginationSchema, WidgetSchema
 from api_server_flask.util.covert_model import get_model_from_schema
 from marshmallow import fields, Schema
 

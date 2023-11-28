@@ -56,7 +56,7 @@ class TestWidget(Widget):
 
     @pytest.fixture
     def widget_dict(self, db, user):
-        return add_context(db,  user, [DEFAULT_NAME])[0]
+        return add_context(db, user, [DEFAULT_NAME])[0]
 
     @pytest.fixture
     def widget_dict_updated(self, db, user):
@@ -65,14 +65,12 @@ class TestWidget(Widget):
         return data
 
     @pytest.fixture
-    def widget_dict_list(self, db,  user):
+    def widget_dict_list(self, db, user):
         return add_context(db, user, NAMES)
 
     @pytest.fixture
     def widget_dict_create(self, db, user):
-        return add_context(
-            db, user, ["first subject", "second subj", "test_subj"]
-        )
+        return add_context(db, user, ["first subject", "second subj", "test_subj"])
 
     def test_create_valid_name(self, client, db, admin, widget_dict_create):
         for i in widget_dict_create:

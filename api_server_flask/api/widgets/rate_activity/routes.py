@@ -17,7 +17,9 @@ from api_server_flask.util.widget.business import (
 )
 from api_server_flask.api.models.rate_activity import RateActivity
 
-rate_activity_ns = Namespace(name="rate_activity", description="Store of user's rate by activities")
+rate_activity_ns = Namespace(
+    name="rate_activity", description="Store of user's rate by activities"
+)
 add_models(
     rate_activity_ns,
     model=rate_activity_model,
@@ -38,7 +40,9 @@ class RateActivityList(Resource):
     """Handles HTTP requests to URL: /api/v1/rate_activity."""
 
     @rate_activity_ns.response(int(HTTPStatus.CREATED), "Added new rate by activity.")
-    @rate_activity_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
+    @rate_activity_ns.response(
+        int(HTTPStatus.FORBIDDEN), "Administrator token required."
+    )
     @rate_activity_ns.expect(rate_activity_model)
     def post(self):
         """Create a widget"""
@@ -58,7 +62,9 @@ class RateActivityList(Resource):
 @rate_activity_ns.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
 @rate_activity_ns.response(int(HTTPStatus.NOT_FOUND), "Rate of activity not found.")
 @rate_activity_ns.response(int(HTTPStatus.UNAUTHORIZED), "Unauthorized.")
-@rate_activity_ns.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal server error.")
+@rate_activity_ns.response(
+    int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal server error."
+)
 @rate_activity_ns.doc(body=rate_activity_model)
 class RateActivity(Resource):
     """Handles HTTP requests to URL: /rate_activity/{widget_id}."""
@@ -73,8 +79,12 @@ class RateActivity(Resource):
     @rate_activity_ns.response(
         int(HTTPStatus.OK), "Rate of activity by user was updated.", rate_activity_model
     )
-    @rate_activity_ns.response(int(HTTPStatus.CREATED), "Added new rate of activity by user.")
-    @rate_activity_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
+    @rate_activity_ns.response(
+        int(HTTPStatus.CREATED), "Added new rate of activity by user."
+    )
+    @rate_activity_ns.response(
+        int(HTTPStatus.FORBIDDEN), "Administrator token required."
+    )
     @rate_activity_ns.expect(rate_activity_model)
     def put(self, widget_id):
         """Update a widget."""
@@ -83,7 +93,9 @@ class RateActivity(Resource):
     @rate_activity_ns.response(
         int(HTTPStatus.NO_CONTENT), "Rate of activity by user was deleted."
     )
-    @rate_activity_ns.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
+    @rate_activity_ns.response(
+        int(HTTPStatus.FORBIDDEN), "Administrator token required."
+    )
     def delete(self, widget_id):
         """Delete a widget."""
         return widget.delete_widget(widget_id)
