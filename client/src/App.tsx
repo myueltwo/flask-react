@@ -6,6 +6,7 @@ import NavbarHeader from "./components/Navbar/Navbar";
 import About from "./pages/about";
 import Account from "./pages/account";
 import Home from "./pages";
+import {Login} from "pages/login";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                 <Route index={false} path='/' element={<Home/>}/>
                 <Route path='/about' element={<About/>}/>
                 <Route path='/account' element={<Account/>}/>
+                <Route path='/login' element={<Login/>}/>
             </Routes>
         </Router>
     );
