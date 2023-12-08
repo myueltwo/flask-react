@@ -1,11 +1,16 @@
 import React, {useState, FormEvent} from "react";
-import {Form, Button} from 'react-bootstrap';
-import {loginAction} from "entities/users";
+import {Form, Button, Alert} from 'react-bootstrap';
+import { useAppSelector, useAppDispatch } from 'app/hooks';
+import { fetchLogin, selectAuthToken, selectAuthError } from "entities/users";
 
 export const Login = () => {
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
     const [validated, setValidated] = useState(false);
+    const authToken = useAppSelector(selectAuthToken);
+    const authError = useAppSelector(selectAuthError);
+    const variant = authToken ? "success" : "danger";
+    const dispatch = useAppDispatch();
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -13,10 +18,12 @@ export const Login = () => {
         if (!form.checkValidity()) {
             event.stopPropagation();
         }
-        loginAction({
-            login,
-            password
-        });
+        dispatch(
+            fetchLogin({
+                login,
+                password
+            })
+        );
         setValidated(true);
     }
 
@@ -46,6 +53,11 @@ export const Login = () => {
                         onChange={(event) => setPassword(event.target.value)}
                     />
                 </Form.Group>
+                {Boolean(authError) && (
+                    <Alert key={variant} variant={variant}>
+                        {authError}
+                    </Alert>
+                )}
                 <Button type="submit">Enter</Button>
             </Form>
         </div>
