@@ -1,13 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import {authTokenReducer} from "entities/users";
+import {authTokenReducer, currentUserReducer} from "entities/users";
 
-const store = configureStore({
+export const store = configureStore({
   reducer: {
       authToken: authTokenReducer,
+      currentUser: currentUserReducer,
   },
 });
-
-export default store;
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>

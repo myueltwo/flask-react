@@ -1,12 +1,19 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from "app/store";
-import { ILogin, IAuthTokenState } from "./types";
+import { ILogin, IAuthTokenState } from "../types";
 
 export const fetchLogin = createAsyncThunk(
     'authToken/fetchLogin',
     async (data: ILogin) => {
       const response = await axios.post('/auth/login', data);
+      return response.data;
+    });
+
+export const fetchLogout = createAsyncThunk(
+    'authToken/fetchLogout',
+    async () => {
+      const response = await axios.post('/auth/logout');
       return response.data;
     });
 
@@ -36,6 +43,9 @@ export const authTokenSlice = createSlice({
         state.status = 'failed';
         state.value = "";
         state.error = action.error.message;
+      })
+      .addCase(fetchLogout.pending, (state, action) => {
+        state.value = "";
       })
   }
 });

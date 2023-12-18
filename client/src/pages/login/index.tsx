@@ -1,7 +1,14 @@
 import React, {useState, FormEvent} from "react";
 import {Form, Button, Alert} from 'react-bootstrap';
+import { useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-import { fetchLogin, selectAuthToken, selectAuthError } from "entities/users";
+import {
+    fetchLogin,
+    selectAuthToken,
+    selectAuthError,
+    fetchUser
+} from "entities/users";
+import {addAuthToken} from "shared/config";
 
 export const Login = () => {
     const [login, setLogin] = useState("");
@@ -11,6 +18,7 @@ export const Login = () => {
     const authError = useAppSelector(selectAuthError);
     const variant = authToken ? "success" : "danger";
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -25,6 +33,13 @@ export const Login = () => {
             })
         );
         setValidated(true);
+    }
+
+    if (authToken) {
+        addAuthToken(authToken);
+        dispatch(fetchUser());
+        navigate("/");
+        return null;
     }
 
     return (

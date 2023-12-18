@@ -20,3 +20,9 @@ export interface IAuthTokenState {
     status: Status;
     error?: string | null;
 }
+
+export interface IUserState {
+    data: IUser | null;
+    status: Status;
+    error?: string | null;
+}
