@@ -3,13 +3,12 @@ from datetime import timezone
 
 from api_server_flask.api.config import db
 from api_server_flask.util.datetime_util import utc_now, dtaware_fromtimestamp
-from api_server_flask.api.models.util import create_id
+from api_server_flask.api.models.util import Base
 
 
-class BlacklistedToken(db.Model):
+class BlacklistedToken(Base):
     """BlacklistedToken Model for storing JWT tokens."""
 
-    id = db.Column(db.String(32), primary_key=True, default=create_id())
     token = db.Column(db.String(500), unique=True, nullable=False)
     blacklisted_on = db.Column(db.DateTime, default=utc_now)
     expires_at = db.Column(db.DateTime, nullable=False)

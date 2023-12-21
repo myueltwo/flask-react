@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from "app/store";
+import { setAuthToken, getAuthToken } from "shared/config";
 import { ILogin, IAuthTokenState } from "../types";
 
 export const fetchLogin = createAsyncThunk(
@@ -18,7 +19,7 @@ export const fetchLogout = createAsyncThunk(
     });
 
 const initialState: IAuthTokenState = {
-  value: "",
+  value: getAuthToken(),
   status: 'idle',
   error: null,
 };
@@ -32,20 +33,24 @@ export const authTokenSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchLogin.pending, (state, action) => {
-        state.status = 'loading'
+        state.status = 'loading';
+        state.value = "";
+        setAuthToken();
       })
       .addCase(fetchLogin.fulfilled, (state, action) => {
         state.status = 'succeeded';
         const { access_token } = action.payload;
-        state.value = `Bearer ${access_token}`;
+        const token = `Bearer ${access_token}`
+        state.value = token;
+        setAuthToken(token);
       })
       .addCase(fetchLogin.rejected, (state, action) => {
         state.status = 'failed';
-        state.value = "";
         state.error = action.error.message;
       })
       .addCase(fetchLogout.pending, (state, action) => {
         state.value = "";
+        setAuthToken();
       })
   }
 });

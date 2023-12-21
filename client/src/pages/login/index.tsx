@@ -1,14 +1,12 @@
-import React, {useState, FormEvent} from "react";
+import React, {useState, FormEvent, useEffect} from "react";
 import {Form, Button, Alert} from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import {
     fetchLogin,
-    selectAuthToken,
     selectAuthError,
-    fetchUser
+    selectAuthToken,
 } from "entities/users";
-import {addAuthToken} from "shared/config";
 
 export const Login = () => {
     const [login, setLogin] = useState("");
@@ -35,12 +33,11 @@ export const Login = () => {
         setValidated(true);
     }
 
-    if (authToken) {
-        addAuthToken(authToken);
-        dispatch(fetchUser());
-        navigate("/");
-        return null;
-    }
+    useEffect(() => {
+        if (authToken) {
+            navigate("/");
+        }
+    }, [authToken]);
 
     return (
         <div>
