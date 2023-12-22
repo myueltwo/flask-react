@@ -9,7 +9,6 @@ import {IProtectedRoute} from "./types";
 
 export const ProtectedRoute: React.FC<IProtectedRoute> = ({
   redirectPath = '/login',
-  children,
 }) => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);

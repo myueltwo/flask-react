@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from "app/store";
 import { setAuthToken } from "shared/config";
 import { IUserState } from "../types";
+import { buildFullName } from "../lib";
 
 export const fetchUser = createAsyncThunk(
     "currentUser/fetchUser",
@@ -29,7 +30,11 @@ export const currentUserSlice = createSlice({
       })
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.data = action.payload;
+        const user = action.payload;
+        state.data = {
+          ...user,
+          fullName: buildFullName(user),
+        }
       })
       .addCase(fetchUser.rejected, (state, action) => {
         setAuthToken();

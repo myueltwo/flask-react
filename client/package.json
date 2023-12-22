@@ -20,6 +20,7 @@
     "react-redux": "^9.0.2",
     "react-router-dom": "^6.4.1",
     "react-scripts": "^5.0.1",
+    "styled-components": "^6.1.2",
     "typescript": "^4.8.4",
     "web-vitals": "^2.1.4"
   },
@@ -48,6 +49,7 @@
     ]
   },
   "devDependencies": {
+    "@types/styled-components": "^5.1.34",
     "sass": "^1.55.0"
   }
 }

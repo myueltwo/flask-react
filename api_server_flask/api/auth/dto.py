@@ -1,6 +1,7 @@
 from marshmallow import Schema, fields
 from flask_restx import Model, fields as fields_fl, SchemaModel
 from marshmallow_jsonschema import JSONSchema
+from api_server_flask.util.widget.dto import WidgetSchema
 
 
 class UserSchema(Schema):
@@ -11,6 +12,8 @@ class UserSchema(Schema):
     surname = fields.Str()
     patronymic = fields.Str()
     token_expires_in = fields.Str()
+    group = fields.Nested(WidgetSchema, dump_only=True)
+    role = fields.Nested(WidgetSchema, dump_only=True)
 
 
 login_model = Model(

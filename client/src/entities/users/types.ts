@@ -1,4 +1,4 @@
-import { Status } from "shared/types";
+import { Status, IGroup, IRole } from "shared/types";
 
 export interface ILogin {
     login: string;
@@ -15,6 +15,12 @@ export interface IUser {
     token_expires_in: string;
 }
 
+export interface IUserInside extends  IUser {
+    fullName?: string;
+    group?: IGroup;
+    role: IRole;
+}
+
 export interface IAuthTokenState {
     value: string;
     status: Status;
@@ -22,7 +28,7 @@ export interface IAuthTokenState {
 }
 
 export interface IUserState {
-    data: IUser | null;
+    data: IUserInside | null;
     status: Status;
     error?: string | null;
 }

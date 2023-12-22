@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from "app/store";
 import { setAuthToken, getAuthToken } from "shared/config";
 import { ILogin, IAuthTokenState } from "../types";
+import { fetchUser } from "./user";
 
 export const fetchLogin = createAsyncThunk(
     'authToken/fetchLogin',
@@ -41,14 +42,18 @@ export const authTokenSlice = createSlice({
         state.status = 'succeeded';
         const { access_token } = action.payload;
         const token = `Bearer ${access_token}`
-        state.value = token;
         setAuthToken(token);
+        state.value = token;
       })
       .addCase(fetchLogin.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       })
       .addCase(fetchLogout.pending, (state, action) => {
+        state.value = "";
+        setAuthToken();
+      })
+      .addCase(fetchUser.rejected, (state, action) => {
         state.value = "";
         setAuthToken();
       })

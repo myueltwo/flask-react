@@ -2,10 +2,12 @@ import React from "react";
 import {Navbar, Container, Nav} from "react-bootstrap";
 import {PersonFill} from "react-bootstrap-icons";
 import { useAppSelector } from 'app/hooks';
-import { selectAuthToken } from "entities/users";
+import { selectAuthToken, selectCurrentUser } from "entities/users";
 
 export const NavbarHeader = () => {
     const authToken = useAppSelector(selectAuthToken);
+    const { surname, name, patronymic } = useAppSelector(selectCurrentUser) || {};
+    const currentName = [surname, name?.at(0),  patronymic?.at(0)].filter(Boolean).join(" ");
     return (
         <Navbar bg="primary" expand="lg" variant="dark">
             <Container>
@@ -20,7 +22,7 @@ export const NavbarHeader = () => {
                             <>
                                 <Nav.Link href="/account">
                                     <PersonFill className="d-inline-block"/>
-                                    current user
+                                    {currentName}
                                 </Nav.Link>
                                 <Nav.Link href="/logout">Logout</Nav.Link>
                             </>

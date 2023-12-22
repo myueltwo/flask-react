@@ -14,11 +14,11 @@ function App() {
         <Router>
             <NavbarHeader/>
             <Routes>
-                <Route index={false} path='/' element={<Home/>}/>
                 <Route path='/about' element={<About/>}/>
                 <Route path='/login' element={<Login/>}/>
                 <Route path='/logout' element={<Logout/>}/>
                 <Route element={<ProtectedRoute/>}>
+                    <Route index={false} path='/' element={<Home/>}/>
                     <Route path='/account' element={<Account/>}/>
                 </Route>
             </Routes>

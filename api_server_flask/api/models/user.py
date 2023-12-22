@@ -25,6 +25,7 @@ class User(Base):
     role_id = db.Column(db.String(32), db.ForeignKey("role.id"), nullable=False)
     role = db.relationship("Role", backref=db.backref("users", lazy=True))
     group_id = db.Column(db.String(32), db.ForeignKey("group.id"), nullable=True)
+    # group = db.relationship("Group", backref=db.backref("users", lazy=True))
 
     def encode_access_token(self):
         """
