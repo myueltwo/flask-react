@@ -1,7 +1,7 @@
 import React from "react";
 import { Container } from "react-bootstrap";
 
-const About = () => {
+export const About = () => {
     return (
         <Container>
             <h3 className="p-2">
@@ -57,5 +57,3 @@ const About = () => {
         </Container>
     );
 };
-
-export default About;

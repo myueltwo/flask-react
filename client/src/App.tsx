@@ -2,11 +2,13 @@ import React from 'react';
 import './App.scss';
 import {BrowserRouter as Router, Routes, Route}
     from 'react-router-dom';
-import About from "pages/about";
-import Account from "pages/account";
-import Home from "pages";
-import {Login} from "pages/login";
-import {Logout} from "pages/logout";
+import {
+    About,
+    Home,
+    Login,
+    Logout,
+    Account,
+} from "pages";
 import { ProtectedRoute, NavbarHeader } from "shared/ui";
 
 function App() {

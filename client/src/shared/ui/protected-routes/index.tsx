@@ -15,9 +15,7 @@ export const ProtectedRoute: React.FC<IProtectedRoute> = ({
   const userPending = useAppSelector(selectCurrentUserPending);
 
   useEffect(() => {
-    if (userPending === "idle") {
-      dispatch(fetchUser());
-    }
+    dispatch(fetchUser());
   }, []);
 
   if (["idle", "loading"].includes(userPending)) {

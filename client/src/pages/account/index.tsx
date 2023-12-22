@@ -1,13 +1,21 @@
-import React from "react";
+import React, {useState} from "react";
 import {Card, Container, Row, Col} from "react-bootstrap";
 import {Person} from "react-bootstrap-icons";
 import {useAppSelector} from 'app/hooks';
 import {selectCurrentUser} from "entities/users";
+import {ResetToken} from "./resetToken";
 
-const Account = () => {
+export const Account = () => {
     const {fullName, role, group} = useAppSelector(selectCurrentUser) || {};
     const roleName = `Role: ${role?.name || ""}`;
     const groupName = group ? `Group: ${group.name}` : "";
+    const [openForm, setOpenForm] = useState(false);
+    const handleClickForm = () => {
+        setOpenForm(true);
+    }
+    const handleCancel = () => {
+        setOpenForm(false);
+    }
 
     return (
         <Container>
@@ -27,7 +35,13 @@ const Account = () => {
                                     {groupName}
                                     <br/>
                                 </Card.Text>
-                                <a className="text-muted" href="#">Do you want to change password?</a>
+                                {openForm ? (
+                                    <ResetToken onCancel={handleCancel}/>
+                                ) : (
+                                    <a className="text-muted" href="#" onClick={handleClickForm}>
+                                        Do you want to change password?
+                                    </a>
+                                )}
                             </Col>
                         </Row>
                     </Container>
@@ -36,5 +50,3 @@ const Account = () => {
         </Container>
     );
 };
-
-export default Account;
