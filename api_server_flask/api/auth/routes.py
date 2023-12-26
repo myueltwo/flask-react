@@ -1,15 +1,17 @@
 from flask_restx import Namespace, Resource
-from api_server_flask.api.auth.dto import user_schema, login_model, user_model
+from api_server_flask.api.auth.dto import user_schema, login_model, user_model, reset_model, ResetSchema
 from http import HTTPStatus
 from api_server_flask.api.auth.business import (
     process_login_request,
     process_logout_request,
     get_logged_in_user,
+    reset_token,
 )
 
 auth_ns = Namespace("auth", description="Authentication of users")
 auth_ns.models[login_model.name] = login_model
 auth_ns.models[user_model.name] = user_model
+auth_ns.models[reset_model.name] = reset_model
 
 
 @auth_ns.route("/login", endpoint="auth_login")
@@ -58,3 +60,23 @@ class GetUser(Resource):
         """Validate access token and return user info."""
         user = get_logged_in_user()
         return user_schema.dump(user)
+
+
+@auth_ns.route("/reset_password", endpoint="auth_reset_password")
+class ResetPassword(Resource):
+    """Handles HTTP requests to URL: /auth/reset_password."""
+
+    @auth_ns.doc(security="Bearer")
+    @auth_ns.expect(reset_model)
+    @auth_ns.response(int(HTTPStatus.OK), "Password was changed.", user_model)
+    @auth_ns.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
+    @auth_ns.response(int(HTTPStatus.UNAUTHORIZED), "Token is invalid or expired.")
+    @auth_ns.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal server error.")
+    def post(self):
+        """Change password from an existing user and return user info."""
+        from api_server_flask.util.schema_load import parser_schema_load
+
+        data = parser_schema_load(ResetSchema())
+        new_password = data.get("new_password")
+        repeat_password = data.get("repeat_password")
+        return reset_token(new_password, repeat_password)

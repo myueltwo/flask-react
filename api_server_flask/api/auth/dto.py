@@ -2,6 +2,7 @@ from marshmallow import Schema, fields
 from flask_restx import Model, fields as fields_fl, SchemaModel
 from marshmallow_jsonschema import JSONSchema
 from api_server_flask.util.widget.dto import WidgetSchema
+from api_server_flask.util.covert_model import get_model_from_schema
 
 
 class UserSchema(Schema):
@@ -16,6 +17,11 @@ class UserSchema(Schema):
     role = fields.Nested(WidgetSchema, dump_only=True)
 
 
+class ResetSchema(Schema):
+    new_password = fields.Str(required=True, load_only=True)
+    repeat_password = fields.Str(required=True, load_only=True)
+
+
 login_model = Model(
     "LoginModel",
     {
@@ -27,3 +33,4 @@ login_model = Model(
 user_schema = UserSchema()
 user_model_schema = JSONSchema().dump(user_schema)["definitions"]["UserSchema"]
 user_model = SchemaModel("UserSchema", user_model_schema)
+reset_model = get_model_from_schema(ResetSchema, "ResetSchema")

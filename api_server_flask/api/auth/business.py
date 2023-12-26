@@ -8,6 +8,8 @@ from api_server_flask.util.datetime_util import (
     remaining_fromtimestamp,
     format_timespan_digits,
 )
+from api_server_flask.api.auth.dto import user_schema
+from api_server_flask.api.config import db
 
 
 def process_login_request(login, password):
@@ -61,3 +63,17 @@ def get_logged_in_user():
     expires_at = get_logged_in_user.expires_at
     user.token_expires_in = format_timespan_digits(remaining_fromtimestamp(expires_at))
     return user
+
+
+@token_required
+def reset_token(new_password, repeat_password):
+    if not new_password == repeat_password:
+        response_dict = dict(status="error", message="passwords are not equal")
+        return response_dict, HTTPStatus.BAD_REQUEST
+    user = get_logged_in_user()
+    user.password = new_password
+    # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+    # user.password = hashed_password
+    db.session.commit()
+    return user_schema.dump(user)
+
