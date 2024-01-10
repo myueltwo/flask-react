@@ -32,3 +32,8 @@ export interface IUserState {
     status: Status;
     error?: string | null;
 }
+
+export interface IResetPassword {
+    new_password?: string;
+    repeat_password?: string;
+}

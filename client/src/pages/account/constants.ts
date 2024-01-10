@@ -1,0 +1,1 @@
+export const IS_SUCCESSFUL_CHANGED_PASSWORD = "The password has changed."

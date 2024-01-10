@@ -1,21 +1,39 @@
 import React, {FC, FormEvent, useState} from "react";
-import {Button, Form} from "react-bootstrap";
+import {Button, Form, Alert} from "react-bootstrap";
 import styled from "styled-components";
+import {useAppDispatch} from "app/hooks";
+import {fetchResetPassword} from "entities/users";
 import {IResetToken} from "./types";
 
 export const ResetToken: FC<IResetToken> = ({onCancel}) => {
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
     const [validated, setValidated] = useState(false);
+    const [authError, setAuthError] = useState("");
+    const dispatch = useAppDispatch();
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         event.stopPropagation();
 
-        if (password === repeatPassword) {
-            setValidated(true);
-            onCancel(true);
+        const form = event.currentTarget;
+        if (form.checkValidity()) {
+            dispatch(
+                fetchResetPassword({
+                    new_password: password,
+                    repeat_password: repeatPassword,
+                })
+            )
+                .unwrap()
+                .then(() => onCancel(true))
+                .catch((error) => {
+                    setAuthError(error.message);
+                    setPassword("");
+                    setRepeatPassword("");
+                    setValidated(false);
+                });
         }
+        setValidated(true);
     };
 
     return (
@@ -40,11 +58,11 @@ export const ResetToken: FC<IResetToken> = ({onCancel}) => {
                     onChange={(event) => setRepeatPassword(event.target.value)}
                 />
             </Form.Group>
-            {/*{Boolean(authError) && (*/}
-            {/*    <Alert key={variant} variant={variant}>*/}
-            {/*        {authError}*/}
-            {/*    </Alert>*/}
-            {/*)}*/}
+            {Boolean(authError) && (
+                <Alert key="danger" variant="danger">
+                    {authError}
+                </Alert>
+            )}
             <ButtonsWrap>
                 <Button type="submit">Enter</Button>
                 <Button variant="secondary" onClick={() => onCancel()}>Cancel</Button>
