@@ -1,14 +1,6 @@
 {
   "compilerOptions": {
     "baseUrl": "./src",
-    "paths": {
-      "components/*": ["components/*"],
-      "pages/*": ["pages/*"],
-      "entities/*": ["entities/*"],
-      "shared/*": ["shared/*"],
-      "app/*": ["app/*"],
-    },
-//    "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -26,7 +18,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "target": "es5"
   },
   "include": [
     "src"

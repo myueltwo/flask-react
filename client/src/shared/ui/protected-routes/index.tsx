@@ -1,28 +1,19 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Navigate,
   Outlet,
 } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from 'app/hooks';
-import { selectCurrentUser, selectCurrentUserPending, fetchUser } from "entities/users";
+import { useGetCurrentUserQuery } from "services/api";
 import {IProtectedRoute} from "./types";
 
 export const ProtectedRoute: React.FC<IProtectedRoute> = ({
   redirectPath = '/login',
 }) => {
-  const dispatch = useAppDispatch();
-  const user = useAppSelector(selectCurrentUser);
-  const userPending = useAppSelector(selectCurrentUserPending);
+  const { isUninitialized, isLoading, isError } = useGetCurrentUserQuery();
 
-  useEffect(() => {
-    dispatch(fetchUser());
-  }, []);
-
-  if (["idle", "loading"].includes(userPending)) {
+  if (isUninitialized || isLoading) {
     return null;
-  }
-
-  if (!user && userPending === "succeeded" || userPending === "failed") {
+  } else if (isError) {
     return <Navigate to={redirectPath} replace />;
   }
 

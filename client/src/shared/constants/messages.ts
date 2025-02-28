@@ -1,0 +1,1 @@
+export const SOMETHING_WRONG = "Something is wrong. Please, try it again later.";

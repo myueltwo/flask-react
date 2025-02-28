@@ -1,18 +1,18 @@
-import React, {useEffect} from "react";
-import {useNavigate} from "react-router-dom";
-import {useAppDispatch} from 'app/hooks';
-import {fetchLogout} from "entities/users";
-import {getAuthToken} from "shared/config";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useLogoutMutation } from "services/api";
+import { setAuthToken } from "../shared";
 
-export const Logout = () => {
-    const dispatch = useAppDispatch();
+export const Logout: React.FC = () => {
+    const [ fetchLogout, { isUninitialized } ] = useLogoutMutation();
     const navigate = useNavigate();
-    if (getAuthToken()) {
-        dispatch(fetchLogout());
+    if (isUninitialized) {
+        fetchLogout();
+        setAuthToken();
     }
 
     useEffect(() => {
         navigate("/login");
     }, []);
     return null;
-}
+};

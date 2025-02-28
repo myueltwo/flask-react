@@ -13,12 +13,12 @@ export interface IUser {
     patronymic:	string;
     surname: string;
     token_expires_in: string;
+    group?: IGroup;
+    role: IRole;
 }
 
 export interface IUserInside extends  IUser {
     fullName?: string;
-    group?: IGroup;
-    role: IRole;
 }
 
 export interface IAuthTokenState {
@@ -36,4 +36,8 @@ export interface IUserState {
 export interface IResetPassword {
     new_password?: string;
     repeat_password?: string;
+}
+
+export interface ILoginResponse {
+    access_token: string;
 }

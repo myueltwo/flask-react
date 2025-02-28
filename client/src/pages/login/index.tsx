@@ -2,21 +2,18 @@ import React, {useState, FormEvent, useEffect} from "react";
 import {Form, Button, Alert, Container, Row} from 'react-bootstrap';
 import {useNavigate} from "react-router-dom";
 import styled from "styled-components";
-import {useAppSelector, useAppDispatch} from 'app/hooks';
-import {
-    fetchLogin,
-    selectAuthError,
-    selectAuthToken,
-} from "entities/users";
+import { useLoginMutation } from "services/api";
+import { getAuthToken } from "shared";
+import { SOMETHING_WRONG } from "shared/constants";
+import { CustomFetchBaseQueryError } from "shared/types";
 
 export const Login = () => {
+    const [ fetchLogin, { error, isError } ] = useLoginMutation();
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
     const [validated, setValidated] = useState(false);
-    const authToken = useAppSelector(selectAuthToken);
-    const authError = useAppSelector(selectAuthError);
+    const authToken = getAuthToken();
     const variant = authToken ? "success" : "danger";
-    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -25,12 +22,7 @@ export const Login = () => {
         if (!form.checkValidity()) {
             event.stopPropagation();
         }
-        dispatch(
-            fetchLogin({
-                login,
-                password
-            })
-        );
+        fetchLogin({login, password});
         setValidated(true);
     }
 
@@ -67,9 +59,9 @@ export const Login = () => {
                             onChange={(event) => setPassword(event.target.value)}
                         />
                     </Form.Group>
-                    {Boolean(authError) && (
+                    {isError && (
                         <Alert key={variant} variant={variant}>
-                            {authError}
+                            {(error as CustomFetchBaseQueryError).data.message || SOMETHING_WRONG}
                         </Alert>
                     )}
                     <Button type="submit">Enter</Button>

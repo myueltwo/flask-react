@@ -1,8 +1,7 @@
 import React, {FC, FormEvent, useState} from "react";
 import {Button, Form, Alert} from "react-bootstrap";
 import styled from "styled-components";
-import {useAppDispatch} from "app/hooks";
-import {fetchResetPassword} from "entities/users";
+import {useResetPasswordMutation} from "services/api";
 import {IResetToken} from "./types";
 
 export const ResetToken: FC<IResetToken> = ({onCancel}) => {
@@ -10,7 +9,7 @@ export const ResetToken: FC<IResetToken> = ({onCancel}) => {
     const [repeatPassword, setRepeatPassword] = useState("");
     const [validated, setValidated] = useState(false);
     const [authError, setAuthError] = useState("");
-    const dispatch = useAppDispatch();
+    const [fetchResetPassword] = useResetPasswordMutation();
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -18,16 +17,14 @@ export const ResetToken: FC<IResetToken> = ({onCancel}) => {
 
         const form = event.currentTarget;
         if (form.checkValidity()) {
-            dispatch(
-                fetchResetPassword({
-                    new_password: password,
-                    repeat_password: repeatPassword,
-                })
-            )
+            fetchResetPassword({
+                new_password: password,
+                repeat_password: repeatPassword,
+            })
                 .unwrap()
                 .then(() => onCancel(true))
                 .catch((error) => {
-                    setAuthError(error.message);
+                    setAuthError(error.data.message);
                     setPassword("");
                     setRepeatPassword("");
                     setValidated(false);

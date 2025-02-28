@@ -1,12 +1,13 @@
 import React from "react";
 import {Navbar, Container, Nav} from "react-bootstrap";
 import {PersonFill} from "react-bootstrap-icons";
-import { useAppSelector } from 'app/hooks';
-import { selectAuthToken, selectCurrentUser } from "entities/users";
+import {getAuthToken} from "../../config";
+import { useGetCurrentUserQuery } from "services/api";
 
 export const NavbarHeader = () => {
-    const authToken = useAppSelector(selectAuthToken);
-    const { surname, name, patronymic } = useAppSelector(selectCurrentUser) || {};
+    const authToken = getAuthToken();
+    const { data: user } = useGetCurrentUserQuery();
+    const { surname, name, patronymic } = user || {};
     const currentName = [surname, name?.at(0),  patronymic?.at(0)].filter(Boolean).join(" ");
     return (
         <Navbar bg="primary" expand="lg" variant="dark">
