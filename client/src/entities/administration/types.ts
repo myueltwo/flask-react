@@ -11,4 +11,12 @@ export interface ITableInfoProps {
     isLoading: boolean;
     isError?: boolean;
     error?: CustomFetchBaseQueryError;
+    onAddItem: () => void;
+}
+
+export interface IModalForm {
+    show: boolean;
+    onHide: () => void;
+    isAdding?: boolean;
+    onSave: () => void;
 }

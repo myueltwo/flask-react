@@ -1,5 +1,5 @@
 import { api } from "services/api";
-import {ISubject} from "../types";
+import {ISubject} from "./types";
 import {IPageProps, ListResponse} from "shared/types";
 
 const administrationApi = api.injectEndpoints({

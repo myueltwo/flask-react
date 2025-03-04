@@ -1,9 +1,9 @@
 import React, {FC, PropsWithChildren} from "react";
-import {ITableInfoProps} from "../../types";
+import {ITableInfoProps} from "../types";
 import {Button, Container, Table, Placeholder, Alert} from "react-bootstrap";
 import {NO_DATA_FOUND, SOMETHING_WRONG} from "shared/constants";
 
-export const TableInfo: FC<PropsWithChildren<ITableInfoProps>> = ({isLoading, fields, children, isError, error}) => {
+export const TableInfo: FC<PropsWithChildren<ITableInfoProps>> = ({isLoading, fields, children, isError, error, onAddItem}) => {
     if (!fields) {
         return (
             <Container>
@@ -23,7 +23,7 @@ export const TableInfo: FC<PropsWithChildren<ITableInfoProps>> = ({isLoading, fi
     return (
         <Container>
             {isLoading ? (<Placeholder.Button variant="primary" xs={6}/>)
-                : (<Button variant="outline-info" className="my-1">Add item</Button>)
+                : (<Button variant="outline-info" className="my-1" onClick={onAddItem}>Add item</Button>)
             }
             <Table striped bordered hover>
                 <thead>

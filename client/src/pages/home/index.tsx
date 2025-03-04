@@ -7,7 +7,7 @@ export const Home = () => {
     const variant = 'success'
     const { data } = useGetCurrentUserQuery();
 
-    if (data?.role?.name === "Студент") {
+    if (data?.role?.name === "Деканат") {
         return <Admin/>
     }
 

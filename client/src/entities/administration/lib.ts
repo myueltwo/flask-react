@@ -1,11 +1,11 @@
-import {SUBJECT} from "shared/constants";
+import {NAME, NUMBER_OF_HOURS, SUBJECT} from "shared/constants";
 
 export const entitiesProperties = ({
     [SUBJECT]: [{
         id: "name",
-        name: "Название",
+        name: NAME,
     }, {
         id: "count_hours",
-        name: "Количество часов"
+        name: NUMBER_OF_HOURS,
     }],
 });
