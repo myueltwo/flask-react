@@ -4,9 +4,9 @@ import type {
   FetchArgs,
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query';
-import {ILogin, ILoginResponse, IResetPassword, IUser, IUserInside} from "entities/users/types";
+import {ILogin, ILoginResponse, IResetPassword, IUser, IUserInside} from "shared/types";
 import { getAuthToken, setAuthToken } from "../shared";
-import { buildFullName } from "entities/users";
+import { buildFullName } from "shared/libs";
 
 const baseQuery = fetchBaseQuery({
     baseUrl: 'http://127.0.0.1:5000/api/v1',

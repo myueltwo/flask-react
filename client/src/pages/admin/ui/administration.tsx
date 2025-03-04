@@ -19,12 +19,12 @@ export const Administration = () => {
                 <Col sm={3}>
                     <ListGroup variant="flush" onSelect={handleClick} activeKey={listSelected}>
                         {listItems.map(({name, id}) => (
-                            <ListGroup.Item action eventKey={id}>{name}</ListGroup.Item>
+                            <ListGroup.Item action eventKey={id} key={id}>{name}</ListGroup.Item>
                         ))}
                     </ListGroup>
                 </Col>
                 <Col sm={9}>
-                    <TableInfo/>
+                    <TableInfo entity={listSelected}/>
                 </Col>
             </Row>
         </Container>
