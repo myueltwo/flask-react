@@ -1,1 +1,1 @@
-export * from "./Subjects";
+export * from "./subjects/index";

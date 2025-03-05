@@ -1,5 +1,5 @@
 import { api } from "services/api";
-import {ISubject} from "./types";
+import {ISubject, ISubjectRequest} from "./types";
 import {IPageProps, ListResponse} from "shared/types";
 
 const administrationApi = api.injectEndpoints({
@@ -14,8 +14,18 @@ const administrationApi = api.injectEndpoints({
             //         ...result.items.map({})
             //     ]
         }),
+        addSubject: build.mutation<void, ISubjectRequest>({
+            query: ({numberHours, name}) => ({
+                url: "widgets/subjects",
+                method: "POST",
+                body: {
+                    count_hours: numberHours,
+                    name,
+                },
+            }),
+        }),
     }),
     overrideExisting: false,
 });
 
-export const { useGetSubjectsQuery } = administrationApi;
+export const { useGetSubjectsQuery, useAddSubjectMutation } = administrationApi;
