@@ -3,6 +3,7 @@ from api_server_flask.util.covert_model import get_model_from_schema
 
 
 class WidgetSchema(Schema):
+    id = fields.Str(dump_only=True)
     name = fields.Str(required=True)
     link = fields.URL(schemes=["http", "https"], dump_only=True)
 

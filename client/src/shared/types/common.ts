@@ -30,3 +30,9 @@ export interface ListResponse<T> {
     total_items: number;
     total_pages: number;
 }
+
+export interface IAddItemResponse {
+    message: string;
+    status: string;
+    widget_id: string;
+}

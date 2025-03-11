@@ -32,6 +32,7 @@ export const TableInfo: FC<PropsWithChildren<ITableInfoProps>> = ({isLoading, fi
                     {fields.map(({id, name}) => (
                         <th key={id}>{name}</th>
                     ))}
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>

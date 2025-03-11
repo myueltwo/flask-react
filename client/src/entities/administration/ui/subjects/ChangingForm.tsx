@@ -1,16 +1,21 @@
-import React, {useState} from "react";
-import {Form} from "react-bootstrap";
-import {NAME, NUMBER_OF_HOURS} from "shared/constants";
+import React, {useEffect, useState} from "react";
+import {Form, Toast, ToastContainer} from "react-bootstrap";
+import {NAME, NUMBER_OF_HOURS, SOMETHING_WRONG} from "shared/constants";
 import {FormModal} from "../Form";
 import {IChangingForm} from "../../types";
-import {useAddSubjectMutation} from "../../model";
+import {CustomFetchBaseQueryError} from "shared/types";
 
-export const ChangingForm: React.FC<IChangingForm> = ({isAdding, show, onHide}) => {
-    const [addPost, { isLoading: isUpdating }] = useAddSubjectMutation();
-
+export const ChangingForm: React.FC<IChangingForm> = ({show, onHide, isError, error, onSave, isUpdating, data, isAdding}) => {
     const [name, setName] = useState("");
+    const [numberHours, setNumberHours] = useState<undefined | number>(data?.numberHours);
     const [validated, setValidated] = useState(false);
-    const [numberHours, setNumberHours] = useState<undefined | number>();
+
+    useEffect(() => {
+        if (data) {
+            setName(data.name);
+            setNumberHours(data.numberHours);
+        }
+    }, [data]);
     const handleClose = () => {
         onHide();
         setName("");
@@ -19,7 +24,12 @@ export const ChangingForm: React.FC<IChangingForm> = ({isAdding, show, onHide}) 
     };
     const handleSave = () => {
         if (name && numberHours !== undefined) {
-            addPost({name, numberHours})
+            const params = {
+                ...data,
+                name,
+                numberHours,
+            };
+            onSave(params)
                 .unwrap()
                 .finally(handleClose);
         } else {
@@ -27,7 +37,8 @@ export const ChangingForm: React.FC<IChangingForm> = ({isAdding, show, onHide}) 
         }
     }
     return (
-        <FormModal show={show} onHide={handleClose} isAdding={isAdding} onSave={handleSave} isUpdating={isUpdating}>
+        <>
+            <FormModal show={show} onHide={handleClose} isAdding={isAdding} onSave={handleSave} isUpdating={isUpdating}>
                 <Form validated={validated}>
                     <Form.Group className="mb-3" controlId="subjectForm.name">
                         <Form.Label>{NAME}</Form.Label>
@@ -37,6 +48,7 @@ export const ChangingForm: React.FC<IChangingForm> = ({isAdding, show, onHide}) 
                             value={name}
                             onChange={(event) => setName(event.target.value)}
                             required
+                            autoFocus
                         />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="subjectForm.number_of_hours">
@@ -51,5 +63,16 @@ export const ChangingForm: React.FC<IChangingForm> = ({isAdding, show, onHide}) 
                     </Form.Group>
                 </Form>
             </FormModal>
+            {isError && (
+                <ToastContainer position="top-end" className="p-3" style={{zIndex: 1}}>
+                    <Toast delay={3000} bg="danger" autohide>
+                        <Toast.Header>
+                            <strong className="me-auto">Error</strong>
+                        </Toast.Header>
+                        <Toast.Body className="text-white">{(error as CustomFetchBaseQueryError)?.data?.message || SOMETHING_WRONG}</Toast.Body>
+                    </Toast>
+                </ToastContainer>
+            )}
+        </>
     );
 }
