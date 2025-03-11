@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {Button} from "react-bootstrap";
 import { PencilFill, TrashFill } from "react-bootstrap-icons";
 import {useGetSubjectsQuery, useDeleteSubjectMutation} from "../../model";
 import {TableInfo} from "../TableInfo";
@@ -6,7 +7,6 @@ import {entitiesProperties} from "../../lib";
 import {SUBJECT} from "shared/constants";
 import {ISubject, ITableInfoProps} from "../../types";
 import {CustomFetchBaseQueryError} from "shared/types";
-import {ChangingForm} from "./ChangingForm";
 import {EditForm} from "./EditForm";
 import {AddForm} from "./AddForm";
 
@@ -58,14 +58,12 @@ export const Subjects: React.FC = () => {
                             <td key={`field-${id}`}>{item[id as keyof ISubject]}</td>
                         ))}
                         <td>
-                            <a className="btn btn-outline-info mx-1" onClick={() => handleEditItem(item.id)} role="button"
-                               title="Edit item">
+                            <Button variant="outline-info" className="mx-1" title="Edit item" onClick={() => handleEditItem(item.id)}>
                                 <PencilFill/>
-                            </a>
-                            <a className="btn btn-outline-danger mx-1" onClick={() => handleRemoveItem(item.id)} role="button"
-                               title="Delete item">
+                            </Button>
+                            <Button variant="outline-danger" className="mx-1" title="Delete item" onClick={() => handleRemoveItem(item.id)}>
                                 <TrashFill/>
-                            </a>
+                            </Button>
                         </td>
                     </tr>
                 ))}
