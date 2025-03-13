@@ -21,14 +21,17 @@ export interface IPageProps {
     per_page?: number;
 }
 
-export interface ListResponse<T> {
+export interface IPaginationProps {
     has_next: boolean;
     has_prev: boolean;
-    items: T[];
-    items_per_page: number;
     page: number;
-    total_items: number;
     total_pages: number;
+}
+
+export interface ListResponse<T> extends IPaginationProps {
+    items: T[];
+    total_items: number;
+    items_per_page: number;
 }
 
 export interface IAddItemResponse {

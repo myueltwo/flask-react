@@ -76,4 +76,3 @@ def reset_token(new_password, repeat_password):
     # user.password = hashed_password
     db.session.commit()
     return user_schema.dump(user)
-

@@ -2,8 +2,9 @@ import React, {FC, PropsWithChildren} from "react";
 import {ITableInfoProps} from "../types";
 import {Button, Container, Table, Placeholder, Alert} from "react-bootstrap";
 import {NO_DATA_FOUND, SOMETHING_WRONG} from "shared/constants";
+import {Pagination} from "shared/ui";
 
-export const TableInfo: FC<PropsWithChildren<ITableInfoProps>> = ({isLoading, fields, children, isError, error, onAddItem}) => {
+export const TableInfo: FC<PropsWithChildren<ITableInfoProps>> = ({isLoading, fields, children, isError, error, onAddItem, pagination}) => {
     if (!fields) {
         return (
             <Container>
@@ -39,6 +40,7 @@ export const TableInfo: FC<PropsWithChildren<ITableInfoProps>> = ({isLoading, fi
                     {children}
                 </tbody>
             </Table>
+            {pagination && <Pagination {...pagination}/>}
         </Container>
     );
 }

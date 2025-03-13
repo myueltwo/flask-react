@@ -1,4 +1,3 @@
-from flask import Flask
 from api_server_flask.api.config import db, bcrypt, create_api_bp, get_config
 from flask_migrate import Migrate
 from flask import Flask

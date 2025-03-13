@@ -1,22 +1,7 @@
 import {CustomFetchBaseQueryError, ObjectList} from "shared/types";
+import {IPaginationProps} from "shared/ui";
 import {FetchBaseQueryError} from "@reduxjs/toolkit/query";
 import {SerializedError} from "@reduxjs/toolkit";
-
-export interface ISubject {
-    count_hours: number;
-    link?: string;
-    name: string;
-    id: string;
-}
-
-export interface ISubjectRequest {
-    name: string;
-    numberHours: number;
-}
-
-export interface ISubjectEditRequest extends ISubjectRequest {
-    id: string;
-}
 
 export interface ITableInfoProps {
     fields?: ObjectList[];
@@ -24,6 +9,7 @@ export interface ITableInfoProps {
     isError?: boolean;
     error?: CustomFetchBaseQueryError;
     onAddItem: () => void;
+    pagination?: IPaginationProps;
 }
 
 export interface IModalForm {
@@ -39,9 +25,9 @@ export interface IAddForm {
     onHide: () => void;
 }
 
-export interface IChangingForm extends IAddForm {
-    data?: ISubjectRequest;
-    onSave: (data: ISubjectEditRequest | ISubjectRequest) => { unwrap(): Promise<any> };
+export interface IChangingForm<T> extends IAddForm {
+    data?: T;
+    onSave: (data: T) => { unwrap(): Promise<any> };
     isError?: boolean;
     error?: FetchBaseQueryError | SerializedError | undefined;
     isUpdating: boolean;

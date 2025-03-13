@@ -146,6 +146,8 @@ def create_widget_parser(widget: Widget):
 
 def retrieve_widget_list_parser(widget: Widget):
     data = parser_schema_load(PaginationLoadScheme())
+    if isinstance(data, tuple):
+        return data
     page = data.get("page")
     per_page = data.get("per_page")
     return widget.retrieve_widget_list(page, per_page)

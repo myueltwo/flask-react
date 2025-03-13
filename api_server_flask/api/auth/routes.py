@@ -1,5 +1,11 @@
 from flask_restx import Namespace, Resource
-from api_server_flask.api.auth.dto import user_schema, login_model, user_model, reset_model, ResetSchema
+from api_server_flask.api.auth.dto import (
+    user_schema,
+    login_model,
+    user_model,
+    reset_model,
+    ResetSchema,
+)
 from http import HTTPStatus
 from api_server_flask.api.auth.business import (
     process_login_request,

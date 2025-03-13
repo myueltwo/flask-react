@@ -8,10 +8,11 @@ const administrationApi = api
     })
     .injectEndpoints({
     endpoints: (build) => ({
-        getSubjects: build.query<ListResponse<ISubject>, IPageProps | void>({
-            query: (body) => ({
+        getSubjects: build.query<ListResponse<ISubject>, IPageProps | undefined>({
+            query: (params) => ({
                 url: "widgets/subjects",
-                body,
+                params,
+                method: "GET",
             }),
             providesTags: (result) =>
                 result

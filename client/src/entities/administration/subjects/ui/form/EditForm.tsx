@@ -1,6 +1,7 @@
 import React from "react";
 import { useGetSubjectQuery, useEditSubjectMutation } from "../../model";
-import {IEditForm, ISubjectRequest} from "../../types";
+import {ISubjectRequest} from "../../types";
+import {IEditForm} from "entities/administration";
 import {ChangingForm} from "./ChangingForm";
 
 export const EditForm: React.FC<IEditForm> = ({ itemId, ...rest }) => {

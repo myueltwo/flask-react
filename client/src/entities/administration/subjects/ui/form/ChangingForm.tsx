@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Form, Toast, ToastContainer} from "react-bootstrap";
 import {NAME, NUMBER_OF_HOURS, SOMETHING_WRONG} from "shared/constants";
-import {FormModal} from "../Form";
-import {IChangingForm} from "../../types";
+import {FormModal, IChangingForm} from "entities/administration";
 import {CustomFetchBaseQueryError} from "shared/types";
+import { ISubjectRequest, ISubjectEditRequest } from "../../types";
 
-export const ChangingForm: React.FC<IChangingForm> = ({show, onHide, isError, error, onSave, isUpdating, data, isAdding}) => {
+export const ChangingForm: React.FC<IChangingForm<ISubjectRequest | ISubjectEditRequest>> = ({show, onHide, isError, error, onSave, isUpdating, data, isAdding}) => {
     const [name, setName] = useState("");
     const [numberHours, setNumberHours] = useState<undefined | number>(data?.numberHours);
     const [validated, setValidated] = useState(false);

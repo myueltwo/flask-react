@@ -1,17 +1,18 @@
 import React, {useState} from "react";
 import {Button} from "react-bootstrap";
 import { PencilFill, TrashFill } from "react-bootstrap-icons";
-import {useGetSubjectsQuery, useDeleteSubjectMutation} from "../../model";
-import {TableInfo} from "../TableInfo";
-import {entitiesProperties} from "../../lib";
+import {useGetSubjectsQuery, useDeleteSubjectMutation} from "../model";
+import {TableInfo, ITableInfoProps} from "entities/administration";
+import {entitiesProperties} from "../lib";
 import {SUBJECT} from "shared/constants";
-import {ISubject, ITableInfoProps} from "../../types";
+import {ISubject,} from "../types";
 import {CustomFetchBaseQueryError} from "shared/types";
-import {EditForm} from "./EditForm";
-import {AddForm} from "./AddForm";
+import {EditForm} from "./form/EditForm";
+import {AddForm} from "./form/AddForm";
 
 export const Subjects: React.FC = () => {
-    const {data, isLoading, isError, error} = useGetSubjectsQuery();
+    const [page, setPage] = useState(1)
+    const {data, isLoading, isError, error} = useGetSubjectsQuery({page, per_page: 5});
     const [deleteSubject] = useDeleteSubjectMutation();
     const fields = entitiesProperties[SUBJECT];
 
@@ -30,16 +31,21 @@ export const Subjects: React.FC = () => {
         isError,
         error: error as CustomFetchBaseQueryError,
         onAddItem: handleAddItem,
+        ...(data ? {
+            pagination: {
+                has_next: data.has_next,
+                has_prev: data.has_prev,
+                page: data.page,
+                total_pages: data.total_pages,
+                onLoad: (page: number) => setPage(page),
+            }
+        } : {}),
     };
     const formProps = {
         show,
         itemId,
         onHide: handleHideModal
     };
-    const addFormProps = {
-        isAdding: true,
-        ...formProps,
-    }
     const handleEditItem = (id: string) => {
         setShow(true);
         setItemId(id);
@@ -68,7 +74,7 @@ export const Subjects: React.FC = () => {
                     </tr>
                 ))}
             </TableInfo>
-            {show && (itemId ? (<EditForm {...formProps}/>) : (<AddForm {...addFormProps}/>))}
+            {show && (itemId ? (<EditForm {...formProps}/>) : (<AddForm {...formProps}/>))}
         </>
     );
 }
