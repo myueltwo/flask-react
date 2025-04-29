@@ -1,14 +1,14 @@
 import React, {FC, PropsWithChildren} from "react";
 import {ITableInfoProps} from "../types";
 import {Button, Container, Table, Placeholder, Alert} from "react-bootstrap";
-import {NO_DATA_FOUND, SOMETHING_WRONG} from "shared/constants";
+import {Messages} from "shared/messages";
 import {Pagination} from "shared/ui";
 
 export const TableInfo: FC<PropsWithChildren<ITableInfoProps>> = ({isLoading, fields, children, isError, error, onAddItem, pagination}) => {
     if (!fields) {
         return (
             <Container>
-                <div className="my-1">{NO_DATA_FOUND}</div>
+                <div className="my-1">{Messages.noDataFound}</div>
             </Container>
         );
     }
@@ -16,7 +16,7 @@ export const TableInfo: FC<PropsWithChildren<ITableInfoProps>> = ({isLoading, fi
         return (
             <Container>
                 <Alert variant="danger" className="my-1">
-                    {error?.data?.message || SOMETHING_WRONG}
+                    {error?.data?.message || Messages.somethingWrong}
                 </Alert>
             </Container>
         )

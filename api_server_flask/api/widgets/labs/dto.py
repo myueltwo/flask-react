@@ -7,6 +7,7 @@ from marshmallow import fields, Schema
 
 
 class LabSchema(Schema):
+    id = fields.Str(dump_only=True)
     name = fields.Str(required=True)
     subject_id = fields.Str(required=True)
     subject = fields.Nested(GradeSubjectSchema, dump_only=True)

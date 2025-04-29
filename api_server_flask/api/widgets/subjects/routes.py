@@ -27,6 +27,7 @@ widget = Widget(
     url_list="api.subject_list",
     schema=SubjectSchema,
     pagination_schema=PaginationSubjectSchema,
+    order_by_field = Subject.name,
 )
 
 

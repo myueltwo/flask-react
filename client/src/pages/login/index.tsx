@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import styled from "styled-components";
 import { useLoginMutation } from "services/api";
 import { getAuthToken } from "shared";
-import { SOMETHING_WRONG } from "shared/constants";
+import { Messages } from "shared/messages";
 import { CustomFetchBaseQueryError } from "shared/types";
 
 export const Login = () => {
@@ -61,7 +61,7 @@ export const Login = () => {
                     </Form.Group>
                     {isError && (
                         <Alert key={variant} variant={variant}>
-                            {(error as CustomFetchBaseQueryError).data.message || SOMETHING_WRONG}
+                            {(error as CustomFetchBaseQueryError).data.message || Messages.somethingWrong}
                         </Alert>
                     )}
                     <Button type="submit">Enter</Button>

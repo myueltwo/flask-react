@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from "react";
-import {Form, Toast, ToastContainer} from "react-bootstrap";
-import {NAME, NUMBER_OF_HOURS, SOMETHING_WRONG} from "shared/constants";
+import {Form} from "react-bootstrap";
+import {NAME, NUMBER_OF_HOURS} from "shared/constants";
 import {FormModal, IChangingForm} from "entities/administration";
 import {CustomFetchBaseQueryError} from "shared/types";
 import { ISubjectRequest, ISubjectEditRequest } from "../../types";
+import {ErrorNotification} from "shared/ui";
 
 export const ChangingForm: React.FC<IChangingForm<ISubjectRequest | ISubjectEditRequest>> = ({show, onHide, isError, error, onSave, isUpdating, data, isAdding}) => {
     const [name, setName] = useState("");
-    const [numberHours, setNumberHours] = useState<undefined | number>(data?.numberHours);
+    const [numberHours, setNumberHours] = useState<undefined | number>();
     const [validated, setValidated] = useState(false);
 
     useEffect(() => {
@@ -64,14 +65,7 @@ export const ChangingForm: React.FC<IChangingForm<ISubjectRequest | ISubjectEdit
                 </Form>
             </FormModal>
             {isError && (
-                <ToastContainer position="top-end" className="p-3" style={{zIndex: 1}}>
-                    <Toast delay={3000} bg="danger" autohide>
-                        <Toast.Header>
-                            <strong className="me-auto">Error</strong>
-                        </Toast.Header>
-                        <Toast.Body className="text-white">{(error as CustomFetchBaseQueryError)?.data?.message || SOMETHING_WRONG}</Toast.Body>
-                    </Toast>
-                </ToastContainer>
+                <ErrorNotification error={error as CustomFetchBaseQueryError}/>
             )}
         </>
     );

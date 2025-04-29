@@ -37,3 +37,9 @@ export interface IChangingForm<T> extends IAddForm {
 export interface IEditForm extends IAddForm {
     itemId: string;
 }
+
+export interface IActions {
+    itemId: string;
+    onEdit: (itemId: string) => void;
+    onRemove: (itemId: string) => void;
+}

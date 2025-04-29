@@ -1,18 +1,16 @@
 import React, {useState} from "react";
-import {useGetSubjectsQuery, useDeleteSubjectMutation} from "../model";
+import {useGetLabsQuery, useDeleteLabMutation} from "../model";
 import {TableInfo, ITableInfoProps, Actions} from "entities/administration";
 import {entitiesProperties} from "../lib";
-import {SUBJECT} from "shared/constants";
-import {ISubject,} from "../types";
+import {ILab} from "../types";
 import {CustomFetchBaseQueryError} from "shared/types";
-import {EditForm} from "./form/EditForm";
-import {AddForm} from "./form/AddForm";
+import {AddForm, EditForm} from "./form";
 
-export const Subjects: React.FC = () => {
+export const Labs: React.FC = () => {
     const [page, setPage] = useState(1)
-    const {data, isLoading, isError, error} = useGetSubjectsQuery({page});
-    const [deleteSubject] = useDeleteSubjectMutation();
-    const fields = entitiesProperties[SUBJECT];
+    const {data, isLoading, isError, error} = useGetLabsQuery({page, per_page: 5});
+    const [deleteSubject] = useDeleteLabMutation();
+    const fields = entitiesProperties;
 
     const [show, setShow] = useState(false);
     const [itemId, setItemId] = useState<string>("");
@@ -58,9 +56,12 @@ export const Subjects: React.FC = () => {
                 {data?.items.map((item, index) => (
                     <tr key={`row-item-${index}`}>
                         <td key={`field-${index}`}>{index + 1}</td>
-                        {fields.map(({id}) => (
-                            <td key={`field-${id}`}>{item[id as keyof ISubject]}</td>
-                        ))}
+                        {fields.map(({id}) => {
+                            if (id === "subject") {
+                                return (<td key={`field-${id}`}>{item[id as keyof ILab].name}</td>);
+                            }
+                            return (<td key={`field-${id}`}>{item[id as keyof Omit<ILab, "subject">]}</td>);
+                        })}
                         <td>
                             <Actions itemId={item.id} onEdit={handleEditItem} onRemove={handleRemoveItem} />
                         </td>

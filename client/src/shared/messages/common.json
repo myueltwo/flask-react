@@ -1,0 +1,13 @@
+{
+    "somethingWrong": "Something is wrong. Please, try it again later.",
+    "noDataFound": "No data found.",
+    "loading": "Please wait, the data is loading...",
+    "actions": {
+        "close": "Close",
+        "save": "Save changes"
+    },
+    "subject": "Subject",
+    "date": "Date",
+    "name": "Name",
+    "search": "Type to search"
+}

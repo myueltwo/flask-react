@@ -26,11 +26,13 @@ class Widget:
         name,
         schema=None,
         pagination_schema=None,
+        order_by_field=None,
     ):
         self.Model = model
         self.url = url
         self.url_list = url_list
         self.name = name
+        self.order_by_field = order_by_field
         if schema is None:
             schema = WidgetSchema
         self.schema = schema
@@ -62,7 +64,8 @@ class Widget:
 
     @admin_token_required
     def retrieve_widget_list(self, page, per_page):
-        pagination = self.Model.query.paginate(page, per_page, error_out=False)
+        model = self.Model.query.order_by(self.order_by_field) if self.order_by_field is not None else self.Model.query
+        pagination = model.paginate(page, per_page, error_out=False)
         for item in pagination.items:
             setattr(item, "link", url_for(self.url, widget_id=item.id))
         pagination_schema = self.pagination_schema()

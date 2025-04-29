@@ -1,7 +1,8 @@
 import React, {FC, PropsWithChildren} from "react";
 import {Modal, Button, Spinner} from "react-bootstrap";
 import {IModalForm} from "../types";
-import {ADD_ITEM, UPDATE_ITEM, CLOSE, SAVE} from "shared/constants";
+import {ADD_ITEM, UPDATE_ITEM} from "shared/constants";
+import {Messages} from "shared/messages";
 
 export const FormModal: FC<PropsWithChildren<IModalForm>> = ({
     show,
@@ -12,6 +13,7 @@ export const FormModal: FC<PropsWithChildren<IModalForm>> = ({
     isUpdating
 }) => {
     const title = isAdding ? ADD_ITEM : UPDATE_ITEM;
+    const {actions} = Messages;
     return (
         <Modal show={show} onHide={onHide}>
             <Modal.Header>
@@ -22,7 +24,7 @@ export const FormModal: FC<PropsWithChildren<IModalForm>> = ({
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={onHide}>
-                    {CLOSE}
+                    {actions.close}
                 </Button>
                 <Button variant="primary" onClick={onSave} disabled={isUpdating}>
                     {isUpdating && (
@@ -34,7 +36,7 @@ export const FormModal: FC<PropsWithChildren<IModalForm>> = ({
                             aria-hidden="true"
                         />
                     )}
-                    {SAVE}
+                    {actions.save}
                 </Button>
             </Modal.Footer>
         </Modal>
