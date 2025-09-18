@@ -39,3 +39,8 @@ export interface IAddItemResponse {
     status: string;
     widget_id: string;
 }
+
+export interface IItemWidget {
+    id: string;
+    name: string;
+}

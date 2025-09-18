@@ -11,7 +11,7 @@ const CustomToggle = React.forwardRef<any, ICustomToggleProps>(({
                                                                     selectedItem,
                                                                     onRemove
                                                                 }, ref) => {
-    const refInput = useRef(null);
+    const refInput = useRef<HTMLInputElement>(null);
     const onRemoveHandle = (e: SyntheticEvent) => {
         onRemove();
         setSearch("");
@@ -50,7 +50,7 @@ const StyledCloseButton = styled(CloseButton)`
     height: 0.5rem;
 `;
 
-export const Combobox: React.FC<IComboboxProps> = ({items, selectedItem, onChange, isLoading, isError, error}) => {
+export const Combobox: React.FC<IComboboxProps> = ({items, selectedItem, onChange, isLoading, isError}) => {
     const [search, setSearch] = useState('');
     const filteredItems = search ? items.filter(({value}) => value.includes(search)) : items;
 

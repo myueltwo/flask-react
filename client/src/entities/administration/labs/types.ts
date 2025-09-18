@@ -1,14 +1,13 @@
+import {IItemWidget} from "shared/types";
+
 export interface ILabRequest {
-    datetime: Date,
-    deadline: Date,
+    datetime: string,
+    deadline: string,
     id: string;
     name: string;
     subject_id: string;
 }
 
 export interface ILab extends ILabRequest {
-    subject: {
-        id: string;
-        name: string;
-    }
+    subject: IItemWidget;
 }

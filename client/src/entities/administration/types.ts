@@ -25,9 +25,9 @@ export interface IAddForm {
     onHide: () => void;
 }
 
-export interface IChangingForm<T> extends IAddForm {
+export interface IChangingForm<T, N = T> extends IAddForm {
     data?: T;
-    onSave: (data: T) => { unwrap(): Promise<any> };
+    onSave: (data: N) => { unwrap(): Promise<any> };
     isError?: boolean;
     error?: FetchBaseQueryError | SerializedError | undefined;
     isUpdating: boolean;

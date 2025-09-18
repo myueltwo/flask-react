@@ -1,0 +1,1 @@
+export const buildManualDate = (date: Date | string | number) => new Date(date).toISOString().slice(0, 10);

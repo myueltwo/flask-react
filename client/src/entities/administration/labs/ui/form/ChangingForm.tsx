@@ -6,14 +6,15 @@ import {CustomFetchBaseQueryError} from "shared/types";
 import {IChangingFormLab} from "./types";
 import {Messages} from "shared/messages";
 import {ErrorNotification, Combobox, IItem} from "shared/ui";
+import {buildManualDate} from "shared/libs";
 
 export const ChangingForm: React.FC<IChangingFormLab> = ({show, onHide, isError, error, onSave, isUpdating, data, isAdding}) => {
     const [name, setName] = useState("");
     const [subject, setSubject] = useState<undefined | IItem>();
-    const [date, setDate] = useState<undefined | Date>();
-    const [deadline, setDeadline] = useState<undefined | Date>();
+    const [date, setDate] = useState<undefined | string>();
+    const [deadline, setDeadline] = useState<undefined | string>();
     const [validated, setValidated] = useState(false);
-    const { data: dataSubjects, isLoading, isError: isErrorSubject } = useGetSubjectsQuery({per_page: 100});
+    const { data: dataSubjects, isLoading, isError: isErrorSubject } = useGetSubjectsQuery({page: 1, per_page: 100});
     const subjects = dataSubjects?.items.map(({id, name}) => ({
         key: id,
         value: name,
@@ -22,9 +23,12 @@ export const ChangingForm: React.FC<IChangingFormLab> = ({show, onHide, isError,
     useEffect(() => {
         if (data) {
             setName(data.name);
-            setSubject(data.subject_id);
-            setDate(data.datetime);
-            setDeadline(data.deadline);
+            setSubject({
+                key: data.subject.id,
+                value: data.subject.name,
+            });
+            setDate(buildManualDate(data.datetime));
+            setDeadline(buildManualDate(data.deadline));
         }
     }, [data]);
     const handleClose = () => {
@@ -36,14 +40,14 @@ export const ChangingForm: React.FC<IChangingFormLab> = ({show, onHide, isError,
         setValidated(false);
     };
     const handleSave = () => {
-        if ([name, subject, date, deadline].every(Boolean)) {
-            const deadlineDate = new Date(deadline);
+        if ([name, subject, date, deadline].every(Boolean) && new Date(date as string) >= new Date(deadline as string)) {
+            const deadlineDate = new Date(deadline as string);
             deadlineDate.setHours(23, 59, 59)
             const params = {
                 ...data,
                 name,
-                subject_id: subject.key,
-                datetime: new Date(date).toISOString(),
+                subject_id: (subject as IItem).key,
+                datetime: new Date(date as string).toDateString(),
                 deadline: deadlineDate.toISOString(),
             };
             onSave(params)

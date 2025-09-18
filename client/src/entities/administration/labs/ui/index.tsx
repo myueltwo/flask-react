@@ -3,7 +3,7 @@ import {useGetLabsQuery, useDeleteLabMutation} from "../model";
 import {TableInfo, ITableInfoProps, Actions} from "entities/administration";
 import {entitiesProperties} from "../lib";
 import {ILab} from "../types";
-import {CustomFetchBaseQueryError} from "shared/types";
+import {CustomFetchBaseQueryError, IItemWidget} from "shared/types";
 import {AddForm, EditForm} from "./form";
 
 export const Labs: React.FC = () => {
@@ -58,7 +58,10 @@ export const Labs: React.FC = () => {
                         <td key={`field-${index}`}>{index + 1}</td>
                         {fields.map(({id}) => {
                             if (id === "subject") {
-                                return (<td key={`field-${id}`}>{item[id as keyof ILab].name}</td>);
+                                return (<td key={`field-${id}`}>{((item[id as keyof ILab] as IItemWidget).name)}</td>);
+                            }
+                            if (["datetime", "deadline"].includes(id)) {
+                                return (<td key={`field-${id}`}>{new Date(item[id as keyof ILab] as string).toLocaleDateString("ru-RU")}</td>);
                             }
                             return (<td key={`field-${id}`}>{item[id as keyof Omit<ILab, "subject">]}</td>);
                         })}
