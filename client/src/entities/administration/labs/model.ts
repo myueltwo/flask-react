@@ -22,7 +22,7 @@ const administrationApi = api
                     ]
                     : [{ type: 'Labs', id: 'PARTIAL-LIST' }],
         }),
-        addLab: build.mutation<CustomFetchBaseQueryError | IAddItemResponse, Omit<ILab, "id">>({
+        addLab: build.mutation<CustomFetchBaseQueryError | IAddItemResponse, Omit<ILabRequest, "id">>({
             query: (body) => ({
                 url: "widgets/labs",
                 method: "POST",
