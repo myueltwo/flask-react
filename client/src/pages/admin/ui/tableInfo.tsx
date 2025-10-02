@@ -1,14 +1,17 @@
 import React from 'react';
 import {ITableInfoProps} from "../types";
-import {SUBJECT, LAB} from "shared/constants";
-import {Subjects, Labs} from "entities/administration";
+import {SUBJECT, LAB, ATTENDANCE_TYPE} from "shared/constants";
+import {Subjects, Labs, TypeAttendance} from "entities/administration";
 
 export const TableInfo: React.FC<ITableInfoProps> = ({entity}) => {
-    if (entity === SUBJECT) {
-        return <Subjects/>
+    switch (entity) {
+        case SUBJECT:
+            return <Subjects/>;
+        case LAB:
+            return <Labs/>;
+        case ATTENDANCE_TYPE:
+            return <TypeAttendance/>;
+        default:
+            return null;
     }
-    if (entity === LAB) {
-        return <Labs/>
-    }
-    return null;
-}
+};

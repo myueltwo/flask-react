@@ -40,14 +40,15 @@ export const ChangingForm: React.FC<IChangingFormLab> = ({show, onHide, isError,
         setValidated(false);
     };
     const handleSave = () => {
-        if ([name, subject, date, deadline].every(Boolean) && new Date(date as string) >= new Date(deadline as string)) {
+        if ([name, subject, date, deadline].every(Boolean) && new Date(date as string) <= new Date(deadline as string)) {
             const deadlineDate = new Date(deadline as string);
             deadlineDate.setHours(23, 59, 59)
             const params = {
                 ...data,
                 name,
+                subject: undefined,
                 subject_id: (subject as IItem).key,
-                datetime: new Date(date as string).toDateString(),
+                datetime: new Date(date as string).toISOString(),
                 deadline: deadlineDate.toISOString(),
             };
             onSave(params)

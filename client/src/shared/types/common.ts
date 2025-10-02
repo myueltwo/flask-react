@@ -40,7 +40,12 @@ export interface IAddItemResponse {
     widget_id: string;
 }
 
-export interface IItemWidget {
-    id: string;
+export interface IItemRequest {
     name: string;
 }
+
+export interface IItemEditRequest extends IItemRequest {
+    id: string;
+}
+
+export interface IItemWidget extends IItemEditRequest {}
