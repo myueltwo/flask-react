@@ -1,7 +1,16 @@
 import React from 'react';
 import {ITableInfoProps} from "../types";
-import {SUBJECT, LAB, ATTENDANCE_TYPE, TYPE_GRADE, GROUP, ROLE} from "shared/constants";
-import {Subjects, Labs, TypeAttendance, TypesGrade, Groups, Roles} from "entities/administration";
+import {
+    SUBJECT,
+    LAB,
+    ATTENDANCE_TYPE,
+    TYPE_GRADE,
+    GROUP,
+    ROLE,
+    ACTIVITY_TYPE,
+    ACTIVITY_SUB_TYPE
+} from "shared/constants";
+import {Subjects, Labs, TypeAttendance, TypesGrade, Groups, Roles, ActivityTypes, ActivitySubTypes} from "entities/administration";
 
 export const TableInfo: React.FC<ITableInfoProps> = ({entity}) => {
     switch (entity) {
@@ -17,6 +26,10 @@ export const TableInfo: React.FC<ITableInfoProps> = ({entity}) => {
             return <Groups/>;
         case ROLE:
             return <Roles/>;
+        case ACTIVITY_TYPE:
+            return <ActivityTypes/>;
+        case ACTIVITY_SUB_TYPE:
+            return <ActivitySubTypes/>;
         default:
             return null;
     }

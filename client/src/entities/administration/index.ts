@@ -6,3 +6,5 @@ export * from "./types-attendance";
 export * from "./types-grade";
 export * from "./groups";
 export * from "./roles";
+export * from "./types-activity";
+export * from "./subtypes-activity";
